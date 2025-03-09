@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
+
+
 <head>
+
+  <!-- CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!-- JS -->
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<!-- Images -->
+<img src="{{ url_for('static', filename='images/clubhub.png') }}" alt="ClubHub">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css">
   <title>Home</title>
+
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+    <img src="{{ url_for('static', filename='images/clubhub.png') }}" 
+         alt="Clubhub Logo" 
+         class="sidebar-logo">
     <ul class="sidebar-list">
       <li><a href="#my-clubs">My Clubs</a></li>
       <li><a href="explore_clubs.html">Explore Clubs</a></li>
@@ -23,7 +37,9 @@
     <nav class="navbar">
       <!-- Left: UMich Logo -->
       <div class="nav-left">
-        <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+        <img src="{{ url_for('static', filename='images/umich_logo.png') }}" 
+             alt="UMich Logo" 
+             class="logo-image" />
       </div>
     
       <!-- Center: Nav links -->
@@ -33,9 +49,7 @@
         <li><a href="contact.html">Contact</a></li>
       </ul>
     
-      <!-- Right: 
-           Either show "Login" if not logged in,
-           OR "Account" + mini profile pic if logged in. -->
+      <!-- Right: show "Login" if not logged in; "Account" + mini pic if logged in -->
       <div class="nav-right">
         <!-- Login link (shown if not logged in) -->
         <a id="loginNavItem" href="login.html">Login</a>
@@ -43,11 +57,11 @@
         <!-- Account link + mini pic (shown if logged in) -->
         <a id="accountNavItem" href="account.html" style="display: none;">Account</a>
         <img 
-          id="miniProfilePic" 
-          class="mini-profile-pic" 
-          src="blank-prof-pic.png" 
-          alt="Profile" 
-          style="display: none;" 
+          id="miniProfilePic"
+          class="mini-profile-pic"
+          src="{{ url_for('static', filename='images/blank-prof-pic.png') }}"
+          alt="Profile"
+          style="display: none;"
         />
       </div>
     </nav>
@@ -66,12 +80,13 @@
       <!-- Slideshow Container (3 images at once, slides from right) -->
       <div class="slideshow-container">
         <div class="slideshow">
-          <!-- Images will be injected here by script.js -->
+          <!-- Images will be dynamically injected by script.js -->
         </div>
       </div>
     </main>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Include your JavaScript file from static/js/script.js -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
