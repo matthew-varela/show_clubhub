@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2) Check login status on page load
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/current_user', {
+      const response = await fetch('https://club-hub-app.com/api/current_user', {
         method: 'GET',
         credentials: 'include', // IMPORTANT so session cookies are sent
       });

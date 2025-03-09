@@ -58,8 +58,28 @@ def get_db_connection():
 # Existing CRUD Endpoints
 # -------------------------
 @app.route('/')
-def home():
+def home_page():
     return render_template('home.html')
+
+@app.route('/login_page')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/about_page')
+def about_page():
+    return render_template('about.html')
+
+@app.route('/contact_page')
+def contact_page():
+    return render_template('home.html')
+
+@app.route('/find_clubs')
+def find_clubs_page():
+    return render_template('find_clubs.html')
+
+@app.route('/people')
+def people_page():
+    return render_template('people.html')
 
 
 @app.route('/api/users', methods=['GET'])
