@@ -23,7 +23,7 @@ else:
     db_config = {
         'host': 'localhost',
         'user': 'root',
-        'password': 'Dynamicset8!',
+        'password': 'mydbpassword123!!!',
         'database': 'clubhub_db'
     }
 
