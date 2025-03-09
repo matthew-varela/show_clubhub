@@ -30,9 +30,13 @@ else:
 app = Flask(__name__)
 app.secret_key = "some_super_secret_key_here"  # Use an environment variable in production
 
+# Allow both your custom domains (www and non-www); adjust as needed
 CORS(
     app,
-    resources={r"/*": {"origins": "https://club-hub-app.com"}},
+    resources={r"/*": {"origins": [
+        "https://club-hub-app.com",
+        "https://www.club-hub-app.com"
+    ]}},
     supports_credentials=True
 )
 
@@ -56,7 +60,6 @@ def get_db_connection():
 @app.route('/')
 def home():
     return render_template('home.html')
-
 
 
 @app.route('/api/users', methods=['GET'])
@@ -89,7 +92,6 @@ def get_user(user_id):
 
     # If you have a profile_image column, do base64 encoding here:
     if user.get('profile_image'):
-        import base64
         encoded = base64.b64encode(user['profile_image']).decode('utf-8')
         user['profile_image'] = f"data:image/jpeg;base64,{encoded}"
 
@@ -113,7 +115,6 @@ def get_user(user_id):
         user['clubs'] = []
 
     return jsonify(user), 200
-
 
 
 @app.route('/api/users', methods=['POST'])
@@ -256,9 +257,7 @@ def get_current_user():
         encoded = base64.b64encode(user['profile_image']).decode('utf-8')
         user['profile_image'] = f"data:image/jpeg;base64,{encoded}"
 
-    # 2) Get user's clubs (assuming you have a join table called user_clubs)
-    #    If your schema is different, modify accordingly.
-    
+    # 2) Get user's clubs
     club_cursor = connection.cursor(dictionary=True)
     club_cursor.execute("""
         SELECT c.id, c.name
@@ -269,8 +268,6 @@ def get_current_user():
     club_rows = club_cursor.fetchall()
     club_cursor.close()
 
-    # Convert list of dicts into a simple list of club names
-    # e.g. [{"name": "Chess Club"}, {"name": "Music Club"}] -> ["Chess Club", "Music Club"]
     if club_rows:
         user['clubs'] = [{"id": row['id'], "name": row['name']} for row in club_rows]
     else:
@@ -334,7 +331,6 @@ def profile_image():
     if not user_id:
         return jsonify({"error": "Not logged in"}), 401
 
-    # Check if the form key 'profilePicture' is present
     if 'profilePicture' not in request.files:
         return jsonify({"error": "No file part in the request"}), 400
 
@@ -363,7 +359,6 @@ def profile_image():
     elif extension in ['jpg', 'jpeg']:
         mime_type = 'image/jpeg'
     else:
-        # Default to JPEG if unrecognized
         mime_type = 'image/jpeg'
 
     # Convert file bytes to base64
@@ -376,8 +371,8 @@ def profile_image():
 def search_users():
     """
     GET /api/users/search?q=Jane
-    Returns a list of users whose firstname OR lastname OR the
-    combination 'firstname lastname' matches the query.
+    Returns a list of users whose firstname OR lastname OR 
+    the combination 'firstname lastname' matches the query.
     """
     query = request.args.get('q', '').strip()
     if not query:
@@ -422,7 +417,6 @@ def get_clubs_by_college(college_id):
         return jsonify({"error": "Database connection failed"}), 500
 
     cursor = connection.cursor(dictionary=True)
-    # Join the clubs table with the college_clubs join table
     query = """
         SELECT c.id, c.name
         FROM clubs c
@@ -435,9 +429,6 @@ def get_clubs_by_college(college_id):
     connection.close()
 
     return jsonify(clubs), 200
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

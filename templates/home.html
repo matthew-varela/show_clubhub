@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
-
 <head>
-
-  <!-- CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
-<!-- JS -->
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
-<!-- Images -->
-<img src="{{ url_for('static', filename='images/clubhub.png') }}" alt="ClubHub">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Home</title>
 
+  <!-- Link to your CSS file in static/css/style.css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <!-- Sidebar -->
@@ -86,7 +76,7 @@
     </main>
   </div>
 
-  <!-- Include your JavaScript file from static/js/script.js -->
+  <!-- Include your JavaScript file -->
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

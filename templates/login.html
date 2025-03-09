@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css">
+  <!-- Updated reference to your static CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <title>Login</title>
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+    <img src="{{ url_for('static', filename='images/clubhub.png') }}" alt="Clubhub Logo" class="sidebar-logo">
     <ul class="sidebar-list">
       <li><a href="#my-clubs">My Clubs</a></li>
       <li><a href="explore_clubs.html">Explore Clubs</a></li>
@@ -23,7 +24,7 @@
     <nav class="navbar">
       <!-- Left: UMich Logo -->
       <div class="nav-left">
-        <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+        <img src="{{ url_for('static', filename='images/umich_logo.png') }}" alt="UMich Logo" class="logo-image" />
       </div>
     
       <!-- Center: Nav links -->
@@ -37,13 +38,12 @@
            Either show "Login" if not logged in,
            OR "Account" + mini profile pic if logged in. -->
       <div class="nav-right">
-    
         <!-- Account link + mini pic (shown if logged in) -->
         <a id="accountNavItem" href="account.html" style="display: none;">Account</a>
         <img 
           id="miniProfilePic" 
           class="mini-profile-pic" 
-          src="blank-prof-pic.png" 
+          src="{{ url_for('static', filename='images/blank-prof-pic.png') }}" 
           alt="Profile" 
           style="display: none;" 
         />
@@ -82,7 +82,7 @@
     </main>
   </div>
 
-  <!-- Load script.js at the bottom -->
-  <script src="script.js"></script>
+  <!-- Updated reference to your static JS -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

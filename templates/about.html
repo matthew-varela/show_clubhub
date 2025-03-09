@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <!-- Updated stylesheet reference -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <title>About Us</title>
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+    <img src="{{ url_for('static', filename='images/clubhub.png') }}" alt="Clubhub Logo" class="sidebar-logo">
     <ul class="sidebar-list">
       <li><a href="#my-clubs">My Clubs</a></li>
       <li><a href="explore_clubs.html">Explore Clubs</a></li>
@@ -22,7 +23,7 @@
     <nav class="navbar">
       <!-- Left: UMich Logo -->
       <div class="nav-left">
-        <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+        <img src="{{ url_for('static', filename='images/umich_logo.png') }}" alt="UMich Logo" class="logo-image" />
       </div>
     
       <!-- Center: Nav links -->
@@ -44,7 +45,7 @@
         <img 
           id="miniProfilePic" 
           class="mini-profile-pic" 
-          src="blank-prof-pic.png" 
+          src="{{ url_for('static', filename='images/blank-prof-pic.png') }}" 
           alt="Profile" 
           style="display: none;" 
         />
@@ -56,17 +57,17 @@
       <h1>The Team</h1>
       <p>These are the two awesome beasts that started this and are now billionaires.</p>
       <div class="person-section">
-        <img src="varela.png" alt="Varela Face" class="contact-image">
+        <img src="{{ url_for('static', filename='images/varela.png') }}" alt="Varela Face" class="contact-image">
         <h2>Matthew Varela</h2>
       </div>
       <div class="person-section">
-        <img src="hendo.png" alt="Hendo Face" class="contact-image">
+        <img src="{{ url_for('static', filename='images/hendo.png') }}" alt="Hendo Face" class="contact-image">
         <h2>Matthew Henderson</h2>
       </div>
     </div>
   </div>
 
-  <!-- Add your script here -->
-  <script src="script.js"></script>
+  <!-- Updated JS reference -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
