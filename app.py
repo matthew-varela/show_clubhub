@@ -32,7 +32,7 @@ app.secret_key = "some_super_secret_key_here"  # Use an environment variable in 
 
 CORS(
     app,
-    resources={r"/*": {"origins": "https://your-frontend-url.com"}},
+    resources={r"/*": {"origins": "https://club-hub-app.com"}},
     supports_credentials=True
 )
 
