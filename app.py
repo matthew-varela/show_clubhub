@@ -1,5 +1,5 @@
 import base64
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request, session, render_template
 from flask_cors import CORS
 import os
 from urllib.parse import urlparse
@@ -53,6 +53,12 @@ def get_db_connection():
 # -------------------------
 # Existing CRUD Endpoints
 # -------------------------
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+
+
 @app.route('/api/users', methods=['GET'])
 def get_users():
     connection = get_db_connection()
