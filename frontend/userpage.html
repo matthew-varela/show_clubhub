@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0"
+  />
+  <title>User Profile</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+    <ul class="sidebar-list">
+      <li><a href="#my-clubs">My Clubs</a></li>
+      <li><a href="explore_clubs.html">Explore Clubs</a></li>
+      <li><a href="people.html">People Search</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <nav class="navbar">
+      <!-- Left: UMich Logo -->
+      <div class="nav-left">
+        <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+      </div>
+    
+      <!-- Center: Nav links -->
+      <ul class="nav-center nav-list">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        
+        <!-- Show this by default if not logged in (script.js hides if logged in) -->
+        <li id="loginNavItem"><a href="login.html">Login</a></li>
+      </ul>
+    
+      <!-- Right: Account link + mini circle pic -->
+      <div class="nav-right">
+        <!-- Hidden by default, script.js shows if logged in -->
+        <a id="accountNavItem" href="account.html" style="display: none;">Account</a>
+        <img 
+          id="miniProfilePic" 
+          class="mini-profile-pic" 
+          src="blank-prof-pic.png" 
+          alt="Profile" 
+          style="display: none;"
+        />
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header>
+      <h1>User Profile</h1>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="account-container">
+      <main>
+        <!-- Profile Section -->
+        <div class="profile-section">
+          <!-- Larger profile picture if desired -->
+          <img
+            id="profileImage"
+            src="blank-prof-pic.png"
+            alt="Profile Picture"
+            class="profile-pic"
+          />
+
+          <!-- User Details -->
+          <div class="user-details">
+            <p id="fullName">Full Name: </p>
+            <p id="email">Email: </p>
+            <p id="username">Username: </p>
+            <p id="phone">Phone: </p>
+
+            <!-- Clubs List Section -->
+            <div id="clubsSection" style="margin-top: 15px;">
+              <h3>User's Clubs</h3>
+              <ul id="clubList"></ul>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Inline script for loading user data -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1) Parse user_id from ?user_id= in the URL
+      const params = new URLSearchParams(window.location.search);
+      const userId = params.get('user_id');
+      if (!userId) {
+        document.getElementById('fullName').textContent = "Full Name: (No user_id provided)";
+        return;
+      }
+
+      try {
+        // 2) Fetch user info from /api/users/<userId>
+        const response = await fetch(`http://127.0.0.1:5000/api/users/${userId}`, {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user. Status: ${response.status}`);
+        }
+
+        const userData = await response.json();
+        // userData might include: id, firstname, lastname, email, username, profile_image,
+        // plus userData.clubs[] if you added it in the backend.
+
+        // 3) Populate fields
+        const fullName = `${userData.firstname || ''} ${userData.lastname || ''}`.trim() || 'Unknown User';
+        document.getElementById('fullName').textContent = `Full Name: ${fullName}`;
+        document.getElementById('email').textContent = `Email: ${userData.email || 'N/A'}`;
+        document.getElementById('username').textContent = `Username: ${userData.username || 'N/A'}`;
+        document.getElementById('phone').textContent = `Phone: ${userData.phone || 'N/A'}`;
+
+        // If your backend returns base64-encoded profile_image, set it
+        if (userData.profile_image) {
+          document.getElementById('profileImage').src = userData.profile_image;
+        }
+
+        // 4) If your backend returns clubs in userData.clubs:
+        if (userData.clubs && Array.isArray(userData.clubs)) {
+          const clubListElement = document.getElementById('clubList');
+          userData.clubs.forEach((club) => {
+            const li = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = `clubpage.html?club_id=${club.id}`; 
+            link.textContent = club.name;
+            link.classList.add('custom-link'); 
+            li.appendChild(link);
+            clubListElement.appendChild(li);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        document.getElementById('fullName').textContent = 'Error loading user!';
+      }
+    });
+  </script>
+
+  <!-- IMPORTANT: Add script.js for login-check logic, navbar updating, etc. -->
+  <script src="script.js"></script>
+</body>
+</html>

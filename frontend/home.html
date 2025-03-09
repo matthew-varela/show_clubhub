@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css">
+  <title>Home</title>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+    <ul class="sidebar-list">
+      <li><a href="#my-clubs">My Clubs</a></li>
+      <li><a href="explore_clubs.html">Explore Clubs</a></li>
+      <li><a href="people.html">People Search</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <nav class="navbar">
+      <!-- Left: UMich Logo -->
+      <div class="nav-left">
+        <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+      </div>
+    
+      <!-- Center: Nav links -->
+      <ul class="nav-center nav-list">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    
+      <!-- Right: 
+           Either show "Login" if not logged in,
+           OR "Account" + mini profile pic if logged in. -->
+      <div class="nav-right">
+        <!-- Login link (shown if not logged in) -->
+        <a id="loginNavItem" href="login.html">Login</a>
+    
+        <!-- Account link + mini pic (shown if logged in) -->
+        <a id="accountNavItem" href="account.html" style="display: none;">Account</a>
+        <img 
+          id="miniProfilePic" 
+          class="mini-profile-pic" 
+          src="blank-prof-pic.png" 
+          alt="Profile" 
+          style="display: none;" 
+        />
+      </div>
+    </nav>
+    
+    <header>
+      <h1>Welcome to ClubHub</h1>
+    </header>
+
+    <main>
+      <!-- Big Heading & Subheading -->
+      <h2 class="main-heading">Find your place!</h2>
+      <p class="main-subheading">
+        Explore the over 2000+ student clubs and organizations at the University of Michigan.
+      </p>
+
+      <!-- Slideshow Container (3 images at once, slides from right) -->
+      <div class="slideshow-container">
+        <div class="slideshow">
+          <!-- Images will be injected here by script.js -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+/* -------------------------------------------------
+   Your Existing CSS
+   ------------------------------------------------- */
+
+/* Define color variables */
+:root {
+  --umich-blue: #00274C;
+  --umich-maize: #FFCB05;
+  --umich-light-gray: #f4f4f4;
+  --white: #ffffff;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* ----- SIDEBAR ----- */
+.sidebar {
+  width: 200px;
+  background-color: var(--umich-blue);
+  height: 100vh;
+  float: left;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.sidebar-logo {
+  max-width: 100%;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.sidebar-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-list li {
+  margin: 1rem 0;
+}
+
+.sidebar-list a {
+  color: var(--umich-maize);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.sidebar-list a:hover {
+  text-decoration: underline;
+}
+
+/* ----- MAIN CONTENT LAYOUT ----- */
+.main-content {
+  margin-left: 200px; /* same width as sidebar */
+  background-color: var(--umich-light-gray);
+  min-height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* ----- TOP NAVIGATION ----- */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--umich-blue);
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+}
+
+.nav-list {
+  list-style-type: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-list li {
+  margin-right: 1rem;
+}
+
+.nav-list a {
+  color: var(--white);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-list a:hover {
+  text-decoration: underline;
+}
+
+.logo-image {
+  height: 40px;
+}
+
+subheader {
+  background-color: var(--umich-blue);
+  color: var(--white);
+  margin-top: 1.25rem;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ----- PAGE HEADER ----- */
+header {
+  background-color: var(--umich-maize);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+  color: var(--umich-blue);
+}
+
+/* Default: hide logout button until JS shows it */
+#logoutButton {
+  display: none;
+  background-color: var(--umich-blue);
+  color: var(--white);
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+#logoutButton:hover {
+  background-color: #001f3a;
+}
+
+/* ----- ACCOUNT CONTAINER "CARD" STYLE ----- */
+.account-container {
+  background-color: var(--white);
+  border: 2px solid var(--umich-blue);
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto; /* center horizontally */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ----- PROFILE SECTION ----- */
+.profile-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--umich-blue);
+}
+
+.user-details p {
+  margin: 0.25rem 0;
+  color: var(--umich-blue);
+}
+
+/* ----- FORM STYLING ----- */
+#uploadForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+#uploadForm label {
+  font-weight: bold;
+  color: var(--umich-blue);
+}
+
+#profilePicture {
+  margin-top: 0.25rem;
+}
+
+#savePictureButton {
+  background-color: var(--umich-blue);
+  color: var(--white);
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  align-self: start;
+}
+
+#savePictureButton:hover {
+  background-color: #001f3a;
+}
+
+/* Example custom link styling */
+.custom-link {
+  color: black;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+.custom-link:hover {
+  transform: scale(1.05);
+}
+
+/* Remove bullet points for clubs */
+#clubList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Container that holds name (left) and pic (right) */
+.top-info-container {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin: 1rem 1rem 2rem 1rem;
+}
+
+/* Larger name font */
+.large-name {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+/* Make the profile pic bigger */
+.clickable-pic {
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.clickable-pic:hover {
+  transform: scale(1.05);
+}
+
+/* Lower section with 2 side-by-side info boxes */
+.account-lower-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem;
+}
+
+.info-box {
+  flex: 1;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.info-box h3 {
+  margin-top: 0;
+}
+
+/* ========== NAVBAR ========== */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #00274C; /* UMich Blue */
+  padding: 0 20px;
+  height: 60px;
+  font-family: "Helvetica", sans-serif;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 40px;
+  width: auto;
+}
+
+.nav-center {
+  flex: 1; 
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1rem;
+}
+
+.nav-center li a {
+  color: #FFCB05;  /* UMich Maize */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-center li a:hover {
+  text-decoration: underline;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-right a {
+  color: #FFCB05;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-right a:hover {
+  text-decoration: underline;
+}
+
+.mini-profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* -------------------------------------------------
+   Dropdown & Search Results
+   ------------------------------------------------- */
+.search-bar {
+  position: relative;
+  display: inline-block;
+}
+
+.search-results {
+  top: 45px;
+  left: 0;
+  width: 300px;
+  background-color: var(--white);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 9999;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.user-result-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.user-result-item:hover {
+  background-color: #f0f0f0;
+}
+
+.result-profile-pic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-result-item a,
+.user-result-item span {
+  text-decoration: none;
+  color: #000;
+  font-weight: 400;
+}
+
+.user-result-item a:hover {
+  text-decoration: none;
+}
+
+/* -------------------------------------------------
+   NEW SLIDESHOW STYLES
+   ------------------------------------------------- */
+.main-heading {
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.main-subheading {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.slideshow-container {
+  width: 100%;
+  overflow: hidden; /* hides images sliding out of view */
+  position: relative;
+  margin: 0 auto;
+  max-width: 1200px; /* optional limit */
+}
+
+/* The “track” of images that we move around */
+.slideshow {
+  display: flex;
+  transition: transform 0.8s ease;
+}
+
+/* Each image occupies 33.333% of the container to show 3 at once */
+.slideshow img {
+  width: 33.3333%;
+  flex-shrink: 0;
+  object-fit: cover;
+  height: 400px; /* Adjust as needed */
+}
+
+@media (max-width: 768px) {
+  .slideshow img {
+    height: auto;
+  }
+}
+
+.main-content main {
+  max-width: 400px;       /* limit width to keep form tidy */
+  margin: 0 auto;         /* center horizontally */
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  max-width: 100%;
+}
+
+/* Make the header stand out */
+.main-content header h1 {
+  font-family: "Helvetica", sans-serif;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--umich-blue);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Each form group stacked nicely */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+/* Label styling for clarity */
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--umich-blue);
+  font-family: "Helvetica", sans-serif;
+}
+
+/* Input fields with some breathing room */
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: "Helvetica", sans-serif;
+}
+
+/* Login button styling */
+#loginButton {
+  display: inline-block;
+  background-color: var(--umich-blue);
+  color: var(--white);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  font-family: "Helvetica", sans-serif;
+}
+
+#loginButton:hover {
+  background-color: #001f3a;
+}
+
+/* Action links (forgot username, create account) in a row with some spacing */
+.login-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* Style the "Forgot Username" and "Create Account" buttons */
+.login-actions button {
+  background-color: var(--umich-maize);
+  color: var(--umich-blue);
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  font-family: "Helvetica", sans-serif;
+}
+
+.login-actions button:hover {
+  background-color: #e6b905; /* slightly darker maize */
+}
+
+/* If your create-account is wrapped in an <a>, styling that button similarly */
+.login-actions a button {
+  background-color: var(--umich-blue);
+  color: var(--white);
+}
+.login-actions a button:hover {
+  background-color: #001f3a;
+}
+

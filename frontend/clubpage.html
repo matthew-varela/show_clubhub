@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css">
+  <title>Club Page</title>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+    <ul class="sidebar-list">
+      <li><a href="#my-clubs">My Clubs</a></li>
+      <li><a href="explore_clubs.html">Explore Clubs</a></li>
+      <li><a href="people.html">People Search</a></li>
+    </ul>
+  </div>
+  
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <nav class="navbar">
+      <!-- Left: UMich Logo -->
+      <div class="nav-left">
+        <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+      </div>
+    
+      <!-- Center: Nav links -->
+      <ul class="nav-center nav-list">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    
+      <!-- Right: 
+           Either show "Login" if not logged in,
+           OR "Account" + mini profile pic if logged in. -->
+      <div class="nav-right">
+        <!-- Login link (shown if not logged in) -->
+        <a id="loginNavItem" href="login.html">Login</a>
+    
+        <!-- Account link + mini pic (shown if logged in) -->
+        <a id="accountNavItem" href="account.html" style="display: none;">Account</a>
+        <img 
+          id="miniProfilePic" 
+          class="mini-profile-pic" 
+          src="blank-prof-pic.png" 
+          alt="Profile" 
+          style="display: none;" 
+        />
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header>
+      <h1 id="clubName">Loading Club Name...</h1>
+    </header>
+
+    <!-- Club Info Section -->
+    <main>
+      <div class="club-info">
+        <p><strong>President:</strong> <span id="clubPresident">Loading...</span></p>
+        <p><strong>Vice President:</strong> <span id="clubVP">Loading...</span></p>
+        <p><strong>Affiliations:</strong> <span id="clubAffiliations">Loading...</span></p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Load your main script AFTER the HTML so we can query elements -->
+  <script src="script.js"></script>
+
+  <!-- Inline script for loading the club data -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1) Parse club_id from the URL
+      const params = new URLSearchParams(window.location.search);
+      const clubId = params.get('club_id');
+      if (!clubId) {
+        document.getElementById('clubName').textContent = "No Club ID provided!";
+        return;
+      }
+
+      // 2) Fetch the club data
+      try {
+        const clubResponse = await fetch(`http://127.0.0.1:5000/api/clubs/${clubId}`, {
+          method: 'GET',
+          credentials: 'include' // if you use sessions
+        });
+        if (!clubResponse.ok) {
+          throw new Error(`Failed to fetch club. Status: ${clubResponse.status}`);
+        }
+        const clubData = await clubResponse.json();
+
+        // Suppose your /api/clubs/<id> returns JSON like:
+        // { "id": 3, "name": "Chess Club", "affiliations": "Board Games Org", "pres": 1, "vp": 2 }
+        const { id, name, affiliations, pres, vp } = clubData;
+
+        // Update the UI
+        document.getElementById('clubName').textContent = name || "Unknown Club Name";
+        document.getElementById('clubAffiliations').textContent = affiliations || "N/A";
+
+        // 3) Fetch President user info
+        if (pres) {
+          const presResponse = await fetch(`http://127.0.0.1:5000/api/users/${pres}`, {
+            credentials: 'include'
+          });
+          if (presResponse.ok) {
+            const presData = await presResponse.json();
+            const fullName = `${presData.firstname} ${presData.lastname}`;
+
+            // Make the President name a clickable link to userpage.html
+            const presElem = document.getElementById('clubPresident');
+            presElem.textContent = ""; // Clear "Loading..."
+
+            const presLink = document.createElement('a');
+            presLink.href = `userpage.html?user_id=${presData.id}`;
+            presLink.textContent = fullName;
+            presLink.classList.add('custom-link'); // <-- Add our custom link class
+            presElem.appendChild(presLink);
+
+          } else {
+            document.getElementById('clubPresident').textContent = `User #${pres}`;
+          }
+        } else {
+          document.getElementById('clubPresident').textContent = "None assigned";
+        }
+
+        // 4) Fetch VP user info
+        if (vp) {
+          const vpResponse = await fetch(`http://127.0.0.1:5000/api/users/${vp}`, {
+            credentials: 'include'
+          });
+          if (vpResponse.ok) {
+            const vpData = await vpResponse.json();
+            const fullName = `${vpData.firstname} ${vpData.lastname}`;
+
+            // Make the VP name a clickable link to userpage.html
+            const vpElem = document.getElementById('clubVP');
+            vpElem.textContent = ""; // Clear "Loading..."
+
+            const vpLink = document.createElement('a');
+            vpLink.href = `userpage.html?user_id=${vpData.id}`;
+            vpLink.textContent = fullName;
+            vpLink.classList.add('custom-link'); // <-- Add our custom link class
+            vpElem.appendChild(vpLink);
+
+          } else {
+            document.getElementById('clubVP').textContent = `User #${vp}`;
+          }
+        } else {
+          document.getElementById('clubVP').textContent = "None assigned";
+        }
+
+      } catch (error) {
+        console.error("Error loading club data:", error);
+        document.getElementById('clubName').textContent = "Error loading club!";
+      }
+    });
+  </script>
+</body>
+</html>

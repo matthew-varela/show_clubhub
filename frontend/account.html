@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>My Account</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+    <ul class="sidebar-list">
+      <li><a href="#my-clubs">My Clubs</a></li>
+      <li><a href="explore_clubs.html">Explore Clubs</a></li>
+      <li><a href="people.html">People Search</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <nav>
+      <ul class="nav-list">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+
+        <!-- Show this by default if not logged in (script.js hides if logged in) -->
+        <li id="loginNavItem"><a href="login.html">Login</a></li>
+
+        <!-- Hidden by default, script.js shows if logged in -->
+        <li id="accountNavItem" style="display: none;"><a href="account.html">Account</a></li>
+      </ul>
+      <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+    </nav>
+
+    <!-- Page Header -->
+    <header>
+      <h1>My Account</h1>
+      <button id="logoutButton" style="display: none;">Logout</button>
+    </header>
+
+    <!-- TOP SECTION: Name on left, Profile Pic on right -->
+    <div class="top-info-container">
+      <!-- Large Name Header on left -->
+      <div class="top-info-left">
+        <h1 id="fullName" class="large-name">Full Name</h1>
+      </div>
+
+      <!-- Profile Picture on right -->
+      <div class="top-info-right">
+        <img
+          id="profileImage"
+          src="blank-prof-pic.png"
+          alt="Profile Picture"
+          class="profile-pic clickable-pic"
+        />
+        <!-- Hidden file input for picture upload -->
+        <input
+          type="file"
+          id="hiddenFileInput"
+          name="profilePicture"
+          accept="image/*"
+          style="display: none;"
+        />
+      </div>
+    </div>
+
+    <!-- LOWER SECTION: Two side-by-side boxes -->
+    <div class="account-lower-section">
+      <!-- Left box: Email, Username -->
+      <div class="info-box" id="userInfoBox">
+        <h3>User Info</h3>
+        <p id="email">Email:</p>
+        <p id="username">Username:</p>
+        <p id="phone">Phone:</p>
+      </div>
+
+      <!-- Right box: Clubs & Organizations -->
+      <div class="info-box" id="clubsBox">
+        <h3>Clubs and Organizations</h3>
+        <ul id="clubList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const logoutButton = document.getElementById('logoutButton');
+      const profileImage = document.getElementById('profileImage');
+      const hiddenFileInput = document.getElementById('hiddenFileInput');
+
+      logoutButton.style.display = 'inline-block';
+
+      // 1) Fetch user data (current user)
+      try {
+        const userResponse = await fetch('http://127.0.0.1:5000/api/current_user', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          if (userData.user) {
+            const { profile_image, firstname, lastname, email, username, clubs, phone } = userData.user;
+
+            // Populate name in top section
+            const fullNameElem = document.getElementById('fullName');
+            fullNameElem.textContent = `${firstname} ${lastname}`;
+
+            // Populate email, username in left box
+            document.getElementById('email').textContent = `Email: ${email}`;
+            document.getElementById('username').textContent = `Username: ${username}`;
+            document.getElementById('phone').textContent = `Phone: ${phone}`;
+
+            // If user has a profile image
+            if (profile_image) {
+              profileImage.src = profile_image;
+            }
+
+            // Populate Clubs in right box
+            if (clubs && clubs.length > 0) {
+              const clubListElement = document.getElementById('clubList');
+              clubs.forEach((club) => {
+                const li = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = `clubpage.html?club_id=${club.id}`;
+                link.textContent = club.name;
+                link.classList.add('custom-link'); // apply your custom styling
+
+                li.appendChild(link);
+                clubListElement.appendChild(li);
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error loading current user/picture:', err);
+      }
+
+      // 2) Clicking profile image triggers hidden file input
+      profileImage.addEventListener('click', () => {
+        hiddenFileInput.click();
+      });
+
+      // 3) When a file is selected, automatically upload
+      hiddenFileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Construct FormData
+        const formData = new FormData();
+        formData.append('profilePicture', file);
+
+        try {
+          const uploadResponse = await fetch('http://127.0.0.1:5000/api/users/upload_picture', {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+          });
+
+          if (uploadResponse.ok) {
+            const data = await uploadResponse.json();
+            alert('Profile picture updated!');
+            if (data.profile_image) {
+              profileImage.src = data.profile_image;
+            }
+          } else {
+            const errData = await uploadResponse.json();
+            alert(`Error updating picture: ${errData.error || 'Unknown error'}`);
+          }
+        } catch (err) {
+          console.error('Error uploading picture:', err);
+          alert('Error uploading picture.');
+        }
+      });
+
+      // 4) Logout Button
+      logoutButton.addEventListener('click', async () => {
+        try {
+          const response = await fetch('http://127.0.0.1:5000/api/logout', {
+            method: 'POST',
+            credentials: 'include'
+          });
+          if (response.ok) {
+            alert('Logged out!');
+            window.location.href = 'home.html';
+          } else {
+            console.error('Logout failed:', response.status);
+          }
+        } catch (error) {
+          console.error('Logout error:', error);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

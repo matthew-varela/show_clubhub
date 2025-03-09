@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css">
+  <title>Create Account</title>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+      <ul class="sidebar-list">
+        <li><a href="#my-clubs">My Clubs</a></li>
+        <li><a href="explore_clubs.html">Explore Clubs</a></li>
+        <li><a href="people.html">People Search</a></li>
+      </ul>
+    </div>
+  <!-- Main Content Area (No Sidebar) -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <nav class="navbar">
+      <!-- Left: UMich Logo -->
+      <div class="nav-left">
+        <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+      </div>
+    
+      <!-- Center: Nav links -->
+      <ul class="nav-center nav-list">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    
+      <!-- Right: 
+           Either show "Login" if not logged in,
+           OR "Account" + mini profile pic if logged in. -->
+      <div class="nav-right">
+        <!-- Login link (shown if not logged in) -->
+        <a id="loginNavItem" href="login.html">Login</a>
+    
+        <!-- Account link + mini pic (shown if logged in) -->
+        <a id="accountNavItem" href="account.html" style="display: none;">Account</a>
+        <img 
+          id="miniProfilePic" 
+          class="mini-profile-pic" 
+          src="blank-prof-pic.png" 
+          alt="Profile" 
+          style="display: none;" 
+        />
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header>
+      <h1>Create Your Account</h1>
+    </header>
+
+    <!-- Account Creation Form -->
+    <main>
+      <form id="createAccountForm">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+
+        <div class="form-group">
+            <label for="firstname">First Name:</label>
+            <input type="firstname" id="firstname" name="firstname" required />
+        </div>
+
+        <div class="form-group">
+            <label for="lastname">Last Name:</label>
+            <input type="lastname" id="lastname" name="lastname" required />
+        </div>
+
+        <button type="submit">Create Account</button>
+      </form>
+      <div id="resultMessage"></div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

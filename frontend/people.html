@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <link rel="stylesheet" href="style.css" />
+  <title>People Search</title>
+</head>
+<body>
+  <!-- Vertical Sidebar -->
+  <div class="sidebar">
+    <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+    <ul class="sidebar-list">
+      <li><a href="#my-clubs">My Clubs</a></li>
+      <li><a href="explore_clubs.html">Explore Clubs</a></li>
+      <li><a href="people.html">People Search</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <nav class="navbar">
+      <!-- Left: UMich Logo -->
+      <div class="nav-left">
+        <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+      </div>
+
+      <!-- Center: Nav links -->
+      <ul class="nav-center nav-list">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+
+      <!-- Right: Login / Account -->
+      <div class="nav-right">
+        <a id="loginNavItem" href="login.html">Login</a>
+        <a id="accountNavItem" href="account.html" style="display: none;">Account</a>
+        <img 
+          id="miniProfilePic" 
+          class="mini-profile-pic" 
+          src="blank-prof-pic.png" 
+          alt="Profile" 
+          style="display: none;" 
+        />
+      </div>
+    </nav>
+
+    <!-- Header Section with Maize Background -->
+    <header style="background-color: #FFCB05; padding: 20px; text-align: center;">
+        <h1>People Search</h1>
+      </header>
+
+      <!-- Search Bar (position: relative for dropdown) -->
+      <div class="search-bar">
+        <input
+          type="text"
+          id="userSearch"
+          placeholder="Search people by name..."
+          aria-label="Search people by name"
+        />
+        <button type="button" id="searchButton">Search</button>
+        <!-- Search Results Container (like a dropdown) -->
+        <div id="searchResults" class="search-results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inline Script (Alternatively, place in `script.js`) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const userSearch = document.getElementById('userSearch');
+      const searchButton = document.getElementById('searchButton');
+      const searchResults = document.getElementById('searchResults');
+      let debounceTimer; // Timer reference for debounce
+
+      /**
+       * Renders the list of matched users to the DOM.
+       * @param {Array} users - Array of user objects {id, firstname, lastname, profilePicUrl, ...}.
+       */
+      const renderSearchResults = (users) => {
+        // Clear any previous results
+        searchResults.innerHTML = '';
+
+        if (!users || users.length === 0) {
+          const none = document.createElement('div');
+          none.textContent = 'No people found.';
+          searchResults.appendChild(none);
+          return;
+        }
+
+        // Create an entry for each user
+        users.forEach((user) => {
+          // If your API returns a profilePicUrl, use that; otherwise, default:
+          const profilePicUrl = user.profile_image || 'blank-prof-pic.png';
+          const fullName = `${user.firstname} ${user.lastname}`;
+
+          const resultItem = document.createElement('div');
+          resultItem.className = 'user-result-item'; // For potential CSS styling
+
+          // Profile pic
+          const pic = document.createElement('img');
+          pic.src = profilePicUrl;
+          pic.alt = 'Profile Picture';
+          pic.className = 'result-profile-pic';
+
+          // Name text (span instead of <a> for no link style; or use <a> but style it)
+          const nameSpan = document.createElement('span');
+          nameSpan.textContent = fullName;
+
+          // If you still need the result to link to user page, do something like:
+          //   const link = document.createElement('a');
+          //   link.href = `userpage.html?user_id=${user.id}`;
+          //   link.appendChild(nameSpan);
+          //   link.className = 'result-name-link';
+          //   resultItem.appendChild(pic);
+          //   resultItem.appendChild(link);
+          // Otherwise, just display pic + text:
+          resultItem.appendChild(pic);
+          resultItem.appendChild(nameSpan);
+
+          // Clickable if you want
+          resultItem.addEventListener('click', () => {
+            // Possibly redirect to user page:
+            window.location.href = `userpage.html?user_id=${user.id}`;
+          });
+
+          searchResults.appendChild(resultItem);
+        });
+      };
+
+      /**
+       * Makes the API call to search.
+       */
+      const handleSearch = async () => {
+        const query = userSearch.value.trim();
+
+        // If the user clears the input, clear the results
+        if (!query) {
+          searchResults.innerHTML = '';
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:5000/api/users/search?q=${encodeURIComponent(query)}`, 
+            {
+              method: 'GET',
+              credentials: 'include', // Include session cookies if needed
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+          }
+
+          const matchedUsers = await response.json();
+          renderSearchResults(matchedUsers);
+
+        } catch (error) {
+          console.error('Error searching for users:', error);
+        }
+      };
+
+      /**
+       * Debounced input handler: don't spam requests on every keystroke.
+       */
+      const handleInput = () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          handleSearch();
+        }, 300);
+      };
+
+      // Attach event listeners
+      searchButton.addEventListener('click', handleSearch);
+      userSearch.addEventListener('input', handleInput);
+    });
+  </script>
+
+  <!-- If you have separate JS, you can remove the above script and reference your script.js here -->
+  <script src="script.js"></script>
+</body>
+</html>
