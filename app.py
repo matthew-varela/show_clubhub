@@ -1,25 +1,42 @@
 import base64
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
+import os
+from urllib.parse import urlparse
 import mysql.connector
 from datetime import timedelta
 
+# Securely use environment variables for DB connection
+database_url = os.environ.get('JAWSDB_MARIA_URL')
+
+if database_url:
+    url = urlparse(database_url)
+    db_config = {
+        'host': url.hostname,
+        'user': url.username,
+        'password': url.password,
+        'database': url.path[1:],  # Removes leading '/'
+        'port': url.port or 3306
+    }
+else:
+    # Local fallback for development/testing
+    db_config = {
+        'host': 'localhost',
+        'user': 'root',
+        'password': 'Dynamicset8!',
+        'database': 'clubhub_db'
+    }
+
 app = Flask(__name__)
-app.secret_key = "some_super_secret_key_here"  # Required for sessions
+app.secret_key = "some_super_secret_key_here"  # Use an environment variable in production
+
 CORS(
     app,
-    resources={r"/*": {"origins": "http://127.0.0.1:5500"}},
+    resources={r"/*": {"origins": "https://your-frontend-url.com"}},
     supports_credentials=True
 )
-app.permanent_session_lifetime = timedelta(minutes=20)
 
-# MySQL Database Configuration
-db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'Dynamicset8!', #db password
-    'database': 'clubhub_db'
-}
+app.permanent_session_lifetime = timedelta(minutes=20)
 
 def get_db_connection():
     """
