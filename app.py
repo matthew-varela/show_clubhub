@@ -73,7 +73,7 @@ def about_page():
 def contact_page():
     return render_template('home.html')
 
-@app.route('/explore_clubs')
+@app.route('/explore_clubs_page')
 def explore_clubs_page():
     return render_template('explore_clubs.html')
 
