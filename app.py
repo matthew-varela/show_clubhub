@@ -110,12 +110,10 @@ def get_user(user_id):
         connection.close()
         return jsonify({"error": "User not found"}), 404
 
-    # If you have a profile_image column, do base64 encoding here:
     if user.get('profile_image'):
         encoded = base64.b64encode(user['profile_image']).decode('utf-8')
         user['profile_image'] = f"data:image/jpeg;base64,{encoded}"
 
-    # Now get clubs
     club_cursor = connection.cursor(dictionary=True)
     club_cursor.execute("""
         SELECT c.id, c.name
@@ -128,7 +126,6 @@ def get_user(user_id):
     cursor.close()
     connection.close()
 
-    # Convert list of dicts into a simpler structure
     if club_rows:
         user['clubs'] = [{"id": row['id'], "name": row['name']} for row in club_rows]
     else:
@@ -163,7 +160,6 @@ def add_user():
     existing_user = cursor.fetchone()
 
     if existing_user:
-        # Username or Email already exists
         cursor.close()
         connection.close()
         return jsonify({"error": "Username or email already in use"}), 400
@@ -204,9 +200,7 @@ def delete_user(user_id):
 
     return jsonify({"message": "User deleted successfully"}), 200
 
-# -------------------------
-# Session-based Login
-# -------------------------
+
 @app.route('/api/login', methods=['POST'])
 def login():
     """
@@ -233,9 +227,7 @@ def login():
 
     if user:
         session.permanent = True
-        # Save to session
         session['user_id'] = user['id']
-        # If user has a BLOB in profile_image, base64-encode it for JSON
         if user.get('profile_image'):
             encoded = base64.b64encode(user['profile_image']).decode('utf-8')
             user['profile_image'] = f"data:image/jpeg;base64,{encoded}"
@@ -298,9 +290,7 @@ def get_current_user():
 
     return jsonify({"user": user}), 200
 
-# -------------------------
-# Club Endpoints
-# -------------------------
+
 @app.route('/api/clubs/<int:club_id>', methods=['GET'])
 def get_club(club_id):
     """
@@ -338,9 +328,6 @@ def get_all_clubs():
 
     return jsonify(clubs), 200
 
-# -------------------------
-# Picture Upload
-# -------------------------
 @app.route('/api/users/upload_picture', methods=['POST'])
 def profile_image():
     """
