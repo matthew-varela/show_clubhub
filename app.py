@@ -77,7 +77,7 @@ def contact_page():
 def explore_clubs_page():
     return render_template('explore_clubs.html')
 
-@app.route('/people')
+@app.route('/people_page')
 def people_page():
     return render_template('people.html')
 
