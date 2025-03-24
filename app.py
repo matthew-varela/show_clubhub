@@ -4,6 +4,7 @@ from flask_cors import CORS
 import os
 from urllib.parse import urlparse
 import mysql.connector
+from mysql.connector import pooling
 from datetime import timedelta
 
 # Securely use environment variables for DB connection
@@ -16,19 +17,30 @@ if database_url:
         'user': url.username,
         'password': url.password,
         'database': url.path[1:],  # Removes leading '/'
-        'port': url.port or 3306
+        'port': url.port or 3306,
+        'pool_name': 'mypool',
+        'pool_size': 5
     }
 else:
     # Local fallback for development/testing
     db_config = {
-        'host': 'localhost',
-        'user': 'root',
-        'password': 'mydbpassword123!!!',
-        'database': 'clubhub_db'
+        'host': os.environ.get('DB_HOST', 'localhost'),
+        'user': os.environ.get('DB_USER', 'root'),
+        'password': os.environ.get('DB_PASSWORD', ''),
+        'database': os.environ.get('DB_NAME', 'clubhub_db'),
+        'pool_name': 'mypool',
+        'pool_size': 5
     }
 
 app = Flask(__name__)
-app.secret_key = "some_super_secret_key_here"  # Use an environment variable in production
+app.secret_key = os.environ.get('SECRET_KEY', 'some_super_secret_key_here')  # Use environment variable
+
+# Create connection pool
+try:
+    connection_pool = mysql.connector.pooling.MySQLConnectionPool(**db_config)
+except mysql.connector.Error as err:
+    print(f"Failed to create connection pool: {err}")
+    connection_pool = None
 
 # Allow both your custom domains (www and non-www); adjust as needed
 CORS(
@@ -44,15 +56,25 @@ app.permanent_session_lifetime = timedelta(minutes=20)
 
 def get_db_connection():
     """
-    Helper function to connect to MySQL. 
+    Helper function to get a connection from the pool.
     Returns a connection or None on failure.
     """
     try:
-        connection = mysql.connector.connect(**db_config)
-        return connection
+        if connection_pool:
+            return connection_pool.get_connection()
+        else:
+            # Fallback to direct connection if pool is not available
+            return mysql.connector.connect(**db_config)
     except mysql.connector.Error as err:
         print(f"Database connection error: {err}")
         return None
+
+def close_db_connection(connection):
+    """
+    Helper function to safely close database connections.
+    """
+    if connection and connection.is_connected():
+        connection.close()
 
 # -------------------------
 # Existing CRUD Endpoints
@@ -92,7 +114,7 @@ def get_users():
     cursor.execute("SELECT * FROM users;")
     users = cursor.fetchall()
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
     return jsonify(users), 200
 
 @app.route('/api/users/<int:user_id>', methods=['GET'])
@@ -107,7 +129,7 @@ def get_user(user_id):
 
     if not user:
         cursor.close()
-        connection.close()
+        close_db_connection(connection)
         return jsonify({"error": "User not found"}), 404
 
     if user.get('profile_image'):
@@ -124,7 +146,7 @@ def get_user(user_id):
     club_rows = club_cursor.fetchall()
     club_cursor.close()
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     if club_rows:
         user['clubs'] = [{"id": row['id'], "name": row['name']} for row in club_rows]
@@ -161,7 +183,7 @@ def add_user():
 
     if existing_user:
         cursor.close()
-        connection.close()
+        close_db_connection(connection)
         return jsonify({"error": "Username or email already in use"}), 400
 
     insert_query = """
@@ -173,7 +195,7 @@ def add_user():
     user_id = cursor.lastrowid
 
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     return jsonify({
         "id": user_id,
@@ -196,7 +218,7 @@ def delete_user(user_id):
     cursor.execute("DELETE FROM users WHERE id = %s;", (user_id,))
     connection.commit()
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     return jsonify({"message": "User deleted successfully"}), 200
 
@@ -223,7 +245,7 @@ def login():
     user = cursor.fetchone()
 
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     if user:
         session.permanent = True
@@ -286,7 +308,7 @@ def get_current_user():
         user['clubs'] = []
 
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     return jsonify({"user": user}), 200
 
@@ -304,7 +326,7 @@ def get_club(club_id):
     cursor.execute("SELECT * FROM clubs WHERE id = %s;", (club_id,))
     club = cursor.fetchone()
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     if club:
         return jsonify(club), 200
@@ -324,7 +346,7 @@ def get_all_clubs():
     cursor.execute("SELECT * FROM clubs;")
     clubs = cursor.fetchall()
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     return jsonify(clubs), 200
 
@@ -357,7 +379,7 @@ def profile_image():
     cursor.execute(update_query, (file_bytes, user_id))
     connection.commit()
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     # Detect file extension for data URI
     extension = file.filename.rsplit('.', 1)[-1].lower()
@@ -410,7 +432,7 @@ def search_users():
             )
 
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     return jsonify(results), 200
 
@@ -433,7 +455,7 @@ def get_clubs_by_college(college_id):
     cursor.execute(query, (college_id,))
     clubs = cursor.fetchall()
     cursor.close()
-    connection.close()
+    close_db_connection(connection)
 
     return jsonify(clubs), 200
 
