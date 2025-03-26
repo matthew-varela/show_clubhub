@@ -9,6 +9,7 @@ from datetime import timedelta
 
 # Securely use environment variables for DB connection
 database_url = os.environ.get('JAWSDB_MARIA_URL')
+print(f"Database URL available: {'Yes' if database_url else 'No'}")
 
 if database_url:
     url = urlparse(database_url)
@@ -21,6 +22,7 @@ if database_url:
         'pool_name': 'mypool',
         'pool_size': 5
     }
+    print(f"Using JawsDB configuration with host: {url.hostname}")
 else:
     # Local fallback for development/testing
     db_config = {
@@ -31,6 +33,7 @@ else:
         'pool_name': 'mypool',
         'pool_size': 5
     }
+    print(f"Using local configuration with host: {db_config['host']}")
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'some_super_secret_key_here')  # Use environment variable
@@ -38,6 +41,7 @@ app.secret_key = os.environ.get('SECRET_KEY', 'some_super_secret_key_here')  # U
 # Create connection pool
 try:
     connection_pool = mysql.connector.pooling.MySQLConnectionPool(**db_config)
+    print("Successfully created connection pool")
 except mysql.connector.Error as err:
     print(f"Failed to create connection pool: {err}")
     connection_pool = None
@@ -458,6 +462,59 @@ def get_clubs_by_college(college_id):
     close_db_connection(connection)
 
     return jsonify(clubs), 200
+
+@app.route('/api/test-db', methods=['GET'])
+def test_db():
+    """
+    Test endpoint to verify database connection and basic operations
+    """
+    connection = get_db_connection()
+    if not connection:
+        return jsonify({
+            "status": "error",
+            "message": "Failed to connect to database",
+            "config": {
+                "host": db_config['host'],
+                "database": db_config['database'],
+                "user": db_config['user']
+            }
+        }), 500
+
+    try:
+        cursor = connection.cursor(dictionary=True)
+        
+        # Test 1: Basic connection
+        cursor.execute("SELECT 1")
+        test1 = cursor.fetchone()
+        
+        # Test 2: Check if users table exists
+        cursor.execute("SHOW TABLES LIKE 'users'")
+        users_table = cursor.fetchone()
+        
+        # Test 3: Count users
+        cursor.execute("SELECT COUNT(*) as count FROM users")
+        user_count = cursor.fetchone()
+        
+        cursor.close()
+        close_db_connection(connection)
+        
+        return jsonify({
+            "status": "success",
+            "message": "Database connection successful",
+            "tests": {
+                "basic_connection": test1,
+                "users_table_exists": bool(users_table),
+                "user_count": user_count['count'] if user_count else 0
+            }
+        }), 200
+        
+    except mysql.connector.Error as err:
+        cursor.close()
+        close_db_connection(connection)
+        return jsonify({
+            "status": "error",
+            "message": f"Database operation failed: {str(err)}"
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
