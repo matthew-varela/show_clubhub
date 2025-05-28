@@ -10,6 +10,7 @@ from datetime import timedelta
 # Securely use environment variables for DB connection
 # --- DB CONFIG -------------------------------------------------------
 database_url = os.getenv('JAWSDB_MARIA_URL')
+print(f"[DEBUG] JAWSDB_MARIA_URL: {database_url}")
 if database_url:
     url = urlparse(database_url)
     db_config = {
