@@ -23,7 +23,7 @@ if database_url:
         'ssl_ca': os.getenv('MYSQL_SSL_CA', '/app/certs/rds-ca-2019-root.pem'),
         'connection_timeout': 5,
         'pool_name': 'mypool',
-        'pool_size': int(os.getenv('MYSQL_POOL_SIZE', 10)),
+        'pool_size': int(os.getenv('MYSQL_POOL_SIZE', 3)),
         'pool_reset_session': True,
     }
 
