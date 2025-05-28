@@ -8,20 +8,24 @@ from mysql.connector import pooling
 from datetime import timedelta
 
 # Securely use environment variables for DB connection
-database_url = os.environ.get('JAWSDB_MARIA_URL')
-print(f"Database URL available: {'Yes' if database_url else 'No'}")
-
+# --- DB CONFIG -------------------------------------------------------
+database_url = os.getenv('JAWSDB_MARIA_URL')
 if database_url:
     url = urlparse(database_url)
     db_config = {
         'host': url.hostname,
         'user': url.username,
         'password': url.password,
-        'database': url.path[1:],  # Removes leading '/'
+        'database': url.path[1:],
         'port': url.port or 3306,
+        # NEW: SSL & sane timeouts
+        'ssl_ca': os.getenv('MYSQL_SSL_CA', '/app/certs/rds-ca-2019-root.pem'),
+        'connection_timeout': 5,
         'pool_name': 'mypool',
-        'pool_size': 5
+        'pool_size': int(os.getenv('MYSQL_POOL_SIZE', 10)),
+        'pool_reset_session': True,
     }
+
     print(f"Using JawsDB configuration with host: {url.hostname}")
 else:
     # Local fallback for development/testing
@@ -60,18 +64,23 @@ app.permanent_session_lifetime = timedelta(minutes=20)
 
 def get_db_connection():
     """
-    Helper function to get a connection from the pool.
-    Returns a connection or None on failure.
+    Borrow a connection from the pool (or open a direct one in local dev),
+    then make sure the socket is still alive.  If MySQL closed it while
+    idle, ping(reconnect=True) transparently re-opens it.
     """
     try:
-        if connection_pool:
-            return connection_pool.get_connection()
-        else:
-            # Fallback to direct connection if pool is not available
-            return mysql.connector.connect(**db_config)
+        # 1️⃣ grab a connection
+        conn = connection_pool.get_connection() if connection_pool \
+               else mysql.connector.connect(**db_config)
+
+        # 2️⃣ verify / revive it (two tries, 1-second pause between)
+        conn.ping(reconnect=True, attempts=2, delay=1)
+
+        return conn
     except mysql.connector.Error as err:
-        print(f"Database connection error: {err}")
+        print(f"[DB] connection error: {err}")
         return None
+
 
 def close_db_connection(connection):
     """
