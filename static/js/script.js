@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (response.ok) {
           const data = await response.json();
           alert(`Login successful! Hello, ${data.user.firstname}.`);
-          window.location.href = 'home.html';
+          window.location.href = '/';
         } else {
           const errorData = await response.json();
           alert(`Login failed: ${errorData.error}`);
