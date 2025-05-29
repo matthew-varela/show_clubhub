@@ -9,7 +9,7 @@ from datetime import timedelta
 
 # Securely use environment variables for DB connection
 # --- DB CONFIG -------------------------------------------------------
-database_url = os.getenv('JAWSDB_MARIA_URL')
+database_url = os.getenv('JAWSDB_MARIA_URL') # JawsDB URL from Heroku
 if database_url:
     url = urlparse(database_url)
     db_config = {
@@ -38,6 +38,7 @@ else:
         'pool_size': 5
     }
     print(f"Using local configuration with host: {db_config['host']}")
+# ---------------------------------------------------------------------
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'some_super_secret_key_here')  # Use environment variable

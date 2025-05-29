@@ -135,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ========== NEW SLIDESHOW CODE ==========
-  // Updated image paths to /static/images/
   const images = [
     '/static/images/eng1.png',
     '/static/images/eng2.png',
@@ -150,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const imagesOnScreen = 3;
   let currentIndex = 0;
+  let isTransitioning = false;
 
   const slideshowElement = document.querySelector('.slideshow');
 
@@ -157,20 +157,37 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!slideshowElement) return;
     slideshowElement.innerHTML = '';
 
+    // Preload all images
+    images.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+
     // Populate the first 3 images
     for (let i = 0; i < imagesOnScreen; i++) {
       const img = document.createElement('img');
       const imageIndex = (currentIndex + i) % images.length;
       img.src = images[imageIndex];
+      img.style.opacity = '1';
       slideshowElement.appendChild(img);
     }
   }
 
   function slideImages() {
-    if (!slideshowElement) return;
-    slideshowElement.style.transform = 'translateX(-33.3333%)';
+    if (!slideshowElement || isTransitioning) return;
+    isTransitioning = true;
 
-    slideshowElement.addEventListener('transitionend', handleTransitionEnd, { once: true });
+    // Add fade out effect
+    const currentImages = slideshowElement.children;
+    for (let i = 0; i < currentImages.length; i++) {
+      currentImages[i].style.opacity = '0';
+    }
+
+    // Wait for fade out, then slide
+    setTimeout(() => {
+      slideshowElement.style.transform = 'translateX(-33.3333%)';
+      slideshowElement.addEventListener('transitionend', handleTransitionEnd, { once: true });
+    }, 300);
   }
 
   function handleTransitionEnd() {
@@ -181,17 +198,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const newImg = document.createElement('img');
     const newImageIndex = (currentIndex + (imagesOnScreen - 1)) % images.length;
     newImg.src = images[newImageIndex];
+    newImg.style.opacity = '0';
     slideshowElement.appendChild(newImg);
 
     slideshowElement.style.transition = 'none';
     slideshowElement.style.transform = 'translateX(0)';
     slideshowElement.offsetHeight; // force reflow
 
-    slideshowElement.style.transition = 'transform 0.8s ease';
+    // Fade in new image
+    setTimeout(() => {
+      newImg.style.opacity = '1';
+      slideshowElement.style.transition = 'transform 0.8s ease';
+      isTransitioning = false;
+    }, 50);
   }
 
   initializeSlideshow();
-  setInterval(slideImages, 3000);
+  setInterval(slideImages, 4000); // Increased interval for smoother experience
 
   // ========== Initialize everything else ==========
 
@@ -273,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Third DOMContentLoaded block for the “Find Clubs By College” feature
+// Third DOMContentLoaded block for the "Find Clubs By College" feature
 document.addEventListener('DOMContentLoaded', () => {
   const collegeSelect = document.getElementById('collegeSelect');
   const collegeSearchButton = document.getElementById('collegeSearchButton');
