@@ -31,26 +31,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2) Check login status on page load
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch('https://club-hub-app.com/api/current_user', {
+      const response = await fetch('/api/current_user', {  // Update the URL to match your backend
         method: 'GET',
-        credentials: 'include', // IMPORTANT so session cookies are sent
+        credentials: 'include', // Important for cookies
       });
+      
       if (!response.ok) {
         throw new Error(`Network response was not OK. Status: ${response.status}`);
       }
 
       const data = await response.json();
-      // data.user is either the user object or null
       if (data.user) {
-        // Logged in user
         showLoggedInUI(data.user);
       } else {
-        // Not logged in
         showLoggedOutUI();
       }
     } catch (error) {
       console.error('Error checking login status:', error);
-      // In case of error, treat as logged out
       showLoggedOutUI();
     }
   };
@@ -58,18 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show/hide UI for logged-in user
   const showLoggedInUI = (user) => {
     // Hide login link
-    const loginNavItem = document.getElementById('loginNavItem'); 
-    if (loginNavItem) loginNavItem.style.display = 'none';
+    const loginNavItem = document.getElementById('loginNavItem');
+    if (loginNavItem) {
+      loginNavItem.style.display = 'none';
+    }
 
     // Show account link
-    const accountNavItem = document.getElementById('accountNavItem'); 
-    if (accountNavItem) accountNavItem.style.display = 'block';
+    const accountNavItem = document.getElementById('accountNavItem');
+    if (accountNavItem) {
+      accountNavItem.style.display = 'block';
+    }
 
     // Show and set mini profile pic
     const miniPic = document.getElementById('miniProfilePic');
     if (miniPic) {
       miniPic.style.display = 'block';
-      miniPic.src = user.profile_image ? user.profile_image : '/static/images/blank-prof-pic.png';
+      miniPic.src = user.profile_image || '/static/images/blank-prof-pic.png';
     }
 
     console.log(`Hello, ${user.firstname}!`);
@@ -79,17 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const showLoggedOutUI = () => {
     // Show login link
     const loginNavItem = document.getElementById('loginNavItem');
-    if (loginNavItem) loginNavItem.style.display = 'block';
+    if (loginNavItem) {
+      loginNavItem.style.display = 'block';
+    }
 
     // Hide account link
     const accountNavItem = document.getElementById('accountNavItem');
-    if (accountNavItem) accountNavItem.style.display = 'none';
+    if (accountNavItem) {
+      accountNavItem.style.display = 'none';
+    }
 
     // Hide mini profile pic
     const miniPic = document.getElementById('miniProfilePic');
     if (miniPic) {
       miniPic.style.display = 'none';
-      miniPic.src = '/static/images/blank-prof-pic.png'; // reset to blank if you want
     }
   };
 
@@ -111,13 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const response = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          credentials: 'include', // Important for cookies
           body: JSON.stringify({ username, password }),
         });
         
         if (response.ok) {
           const data = await response.json();
-          alert(`Login successful! Hello, ${data.user.firstname}.`);
+          // Update UI immediately after successful login
+          showLoggedInUI(data.user);
+          // Redirect to home page
           window.location.href = '/';
         } else {
           const errorData = await response.json();
