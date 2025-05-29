@@ -562,6 +562,7 @@ header h1 {
 }
 
 .modal-content {
+  position: relative;
   background-color: white;
   padding: 2rem;
   border-radius: 12px;
@@ -610,6 +611,25 @@ header h1 {
 
 .secondary-button {
   background-color: var(--umich-maize);
+  color: var(--umich-blue);
+}
+
+/* Add styles for the close button */
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
   color: var(--umich-blue);
 }
 

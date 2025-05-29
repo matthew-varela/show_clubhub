@@ -207,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.className = 'welcome-modal';
       modal.innerHTML = `
         <div class="modal-content">
+          <button class="modal-close" onclick="closeModal()">&times;</button>
           <h2>Welcome to ClubHub!</h2>
           <p>We're excited to help you discover student organizations at the University of Michigan. 
              What are you most interested in?</p>
@@ -225,16 +226,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function handleInterest(interest) {
+  // Add a new function to close the modal
+  function closeModal() {
     const modal = document.querySelector('.welcome-modal');
     if (modal) {
       modal.remove();
     }
-    
+  }
+
+  // Update handleInterest to just close the modal
+  function handleInterest(interest) {
+    closeModal();
     // You could use this interest to personalize the user's experience
     console.log(`User interested in: ${interest}`);
-    
-    // Optionally, you could store this preference and use it to filter clubs
     localStorage.setItem('userInterest', interest);
   }
 
