@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>My Account</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-5.3.3-dist/css/bootstrap.css') }}" />
 </head>
 <body>
   <!-- Sidebar -->
@@ -117,7 +118,12 @@
 
             // If user has a profile image
             if (profile_image) {
-              profileImage.src = profile_image;
+              const timestamp = new Date().getTime();
+              profileImage.src = `${profile_image}?t=${timestamp}`;
+              profileImage.onerror = function() {
+                console.error('Failed to load profile image:', profile_image);
+                this.src = '/static/images/blank-prof-pic.png';
+              };
             }
 
             // Populate Clubs in right box

@@ -70,7 +70,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const miniPic = document.getElementById('miniProfilePic');
     if (miniPic) {
       miniPic.style.display = 'block';
-      miniPic.src = user.profile_image || '/static/images/blank-prof-pic.png';
+      // Check if user has a profile image and it's not empty
+      if (user.profile_image && user.profile_image.trim() !== '') {
+        // Add timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        miniPic.src = `${user.profile_image}?t=${timestamp}`;
+        // Add error handling for the image
+        miniPic.onerror = function() {
+          console.error('Failed to load profile image:', user.profile_image);
+          this.src = '/static/images/blank-prof-pic.png';
+        };
+      } else {
+        miniPic.src = '/static/images/blank-prof-pic.png';
+      }
     }
 
     console.log(`Hello, ${user.firstname}!`);
