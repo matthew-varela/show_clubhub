@@ -186,18 +186,20 @@
       // 4) Logout Button
       logoutButton.addEventListener('click', async () => {
         try {
-          const response = await fetch('http://127.0.0.1:5000/api/logout', {
+          const response = await fetch('/api/logout', {
             method: 'POST',
             credentials: 'include'
           });
           if (response.ok) {
-            alert('Logged out!');
-            window.location.href = 'home.html';
+            alert('Logged out successfully!');
+            window.location.href = '/';  // Redirect to home page using Flask route
           } else {
-            console.error('Logout failed:', response.status);
+            const errorData = await response.json();
+            alert(`Logout failed: ${errorData.error || 'Unknown error'}`);
           }
         } catch (error) {
           console.error('Logout error:', error);
+          alert('An error occurred during logout. Please try again.');
         }
       });
     });
