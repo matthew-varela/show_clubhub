@@ -10,7 +10,7 @@
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
-    <img src="clubhub.png" alt="Clubhub Logo" class="sidebar-logo">
+    <img src="{{ url_for('static', filename='images/clubhub.png') }}" alt="Clubhub Logo" class="sidebar-logo">
     <ul class="sidebar-list">
       <li><a href="#my-clubs">My Clubs</a></li>
       <li><a href="/explore_clubs_page">Explore Clubs</a></li>
@@ -33,7 +33,7 @@
         <!-- Hidden by default, script.js shows if logged in -->
         <li id="accountNavItem" style="display: none;"><a href="/account_page">Account</a></li>
       </ul>
-      <img src="umich_logo.png" alt="UMich Logo" class="logo-image" />
+      <img src="{{ url_for('static', filename='images/umich_logo.png') }}" alt="UMich Logo" class="logo-image" />
     </nav>
 
     <!-- Page Header -->
@@ -53,7 +53,7 @@
       <div class="top-info-right">
         <img
           id="profileImage"
-          src="blank-prof-pic.png"
+          src="{{ url_for('static', filename='images/blank-prof-pic.png') }}"
           alt="Profile Picture"
           class="profile-pic clickable-pic"
         />
@@ -87,7 +87,7 @@
   </div>
 
   <!-- Script -->
-  <script src="script.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       const logoutButton = document.getElementById('logoutButton');
