@@ -1,3 +1,18 @@
+// Move these functions outside the DOMContentLoaded event listener
+function closeModal() {
+  const modal = document.querySelector('.welcome-modal');
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function handleInterest(interest) {
+  closeModal();
+  // You could use this interest to personalize the user's experience
+  console.log(`User interested in: ${interest}`);
+  localStorage.setItem('userInterest', interest);
+}
+
 // Wait for the DOM to load before running scripts
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Interactive navigation is ready!');
@@ -224,22 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Store that user has seen the popup
       localStorage.setItem('hasSeenWelcome', 'true');
     }
-  }
-
-  // Add a new function to close the modal
-  function closeModal() {
-    const modal = document.querySelector('.welcome-modal');
-    if (modal) {
-      modal.remove();
-    }
-  }
-
-  // Update handleInterest to just close the modal
-  function handleInterest(interest) {
-    closeModal();
-    // You could use this interest to personalize the user's experience
-    console.log(`User interested in: ${interest}`);
-    localStorage.setItem('userInterest', interest);
   }
 
   // Show welcome popup after a short delay
