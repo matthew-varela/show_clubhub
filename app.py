@@ -117,6 +117,10 @@ def explore_clubs_page():
 def people_page():
     return render_template('people.html')
 
+@app.route('/account_page')
+def account_page():
+    return render_template('account.html')
+
 
 @app.route('/api/users', methods=['GET'])
 def get_users():
