@@ -198,6 +198,48 @@ document.addEventListener('DOMContentLoaded', () => {
   checkLoginStatus();
   setupLoginForm();
   setupLogoutLink();
+
+  // Add welcome popup functionality
+  function showWelcomePopup() {
+    // Check if user has seen the popup before
+    if (!localStorage.getItem('hasSeenWelcome')) {
+      const modal = document.createElement('div');
+      modal.className = 'welcome-modal';
+      modal.innerHTML = `
+        <div class="modal-content">
+          <h2>Welcome to ClubHub!</h2>
+          <p>We're excited to help you discover student organizations at the University of Michigan. 
+             What are you most interested in?</p>
+          <div class="modal-buttons">
+            <button class="modal-button primary-button" onclick="handleInterest('academic')">Academic Clubs</button>
+            <button class="modal-button secondary-button" onclick="handleInterest('social')">Social Activities</button>
+            <button class="modal-button secondary-button" onclick="handleInterest('sports')">Sports & Recreation</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      modal.style.display = 'flex';
+      
+      // Store that user has seen the popup
+      localStorage.setItem('hasSeenWelcome', 'true');
+    }
+  }
+
+  function handleInterest(interest) {
+    const modal = document.querySelector('.welcome-modal');
+    if (modal) {
+      modal.remove();
+    }
+    
+    // You could use this interest to personalize the user's experience
+    console.log(`User interested in: ${interest}`);
+    
+    // Optionally, you could store this preference and use it to filter clubs
+    localStorage.setItem('userInterest', interest);
+  }
+
+  // Show welcome popup after a short delay
+  setTimeout(showWelcomePopup, 1000);
 });
 
 // Second DOMContentLoaded block for clubs searching

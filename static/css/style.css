@@ -8,21 +8,33 @@
   --umich-maize: #FFCB05;
   --umich-light-gray: #f4f4f4;
   --white: #ffffff;
+  --heading-font: 'Montserrat', 'Helvetica', sans-serif;
+  --body-font: 'Open Sans', 'Arial', sans-serif;
 }
+
+/* Add Google Fonts import at the top of the file */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap');
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: var(--body-font);
+  min-height: 100vh;
+  display: flex;
 }
 
 /* ----- SIDEBAR ----- */
 .sidebar {
   width: 200px;
   background-color: var(--umich-blue);
-  height: 100vh;
-  float: left;
+  min-height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
   padding: 1rem;
   box-sizing: border-box;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-logo {
@@ -53,11 +65,11 @@ body {
 
 /* ----- MAIN CONTENT LAYOUT ----- */
 .main-content {
-  margin-left: 200px; /* same width as sidebar */
+  margin-left: 200px;
   background-color: var(--umich-light-gray);
   min-height: 100vh;
-  padding: 1rem;
-  box-sizing: border-box;
+  width: calc(100% - 200px);
+  padding: 0;
 }
 
 /* ----- TOP NAVIGATION ----- */
@@ -385,25 +397,37 @@ header h1 {
    NEW SLIDESHOW STYLES
    ------------------------------------------------- */
 .main-heading {
-  font-size: 3rem;
-  font-weight: bold;
+  font-family: var(--heading-font);
+  font-size: 3.5rem;
+  font-weight: 700;
   text-align: center;
   margin-top: 2rem;
+  color: var(--umich-blue);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .main-subheading {
-  font-size: 1.2rem;
+  font-family: var(--body-font);
+  font-size: 1.4rem;
   text-align: center;
   margin-bottom: 2rem;
+  color: #444;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
 }
 
 .slideshow-container {
   width: 100%;
   overflow: hidden;
   position: relative;
-  margin: 0 auto;
+  margin: 2rem auto;
   max-width: 1200px;
   background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
 }
 
 .slideshow {
@@ -521,5 +545,71 @@ header h1 {
 }
 .login-actions a button:hover {
   background-color: #001f3a;
+}
+
+/* Add a welcome popup modal */
+.welcome-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  font-family: var(--heading-font);
+  color: var(--umich-blue);
+  margin-bottom: 1rem;
+}
+
+.modal-content p {
+  font-family: var(--body-font);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.modal-button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--body-font);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.modal-button:hover {
+  transform: translateY(-2px);
+}
+
+.primary-button {
+  background-color: var(--umich-blue);
+  color: white;
+}
+
+.secondary-button {
+  background-color: var(--umich-maize);
+  color: var(--umich-blue);
 }
 
