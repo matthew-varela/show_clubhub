@@ -399,29 +399,29 @@ header h1 {
 
 .slideshow-container {
   width: 100%;
-  overflow: hidden; /* hides images sliding out of view */
+  overflow: hidden;
   position: relative;
   margin: 0 auto;
-  max-width: 1200px; /* optional limit */
+  max-width: 1200px;
+  background-color: #f8f9fa;
 }
 
-/* The “track” of images that we move around */
 .slideshow {
   display: flex;
+  width: 300%; /* 3 images * 100% */
   transition: transform 0.8s ease;
 }
 
-/* Each image occupies 33.333% of the container to show 3 at once */
 .slideshow img {
   width: 33.3333%;
   flex-shrink: 0;
   object-fit: cover;
-  height: 400px; /* Adjust as needed */
+  height: 400px;
 }
 
 @media (max-width: 768px) {
   .slideshow img {
-    height: auto;
+    height: 300px;
   }
 }
 

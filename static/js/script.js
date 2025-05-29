@@ -149,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const imagesOnScreen = 3;
   let currentIndex = 0;
-  let isTransitioning = false;
 
   const slideshowElement = document.querySelector('.slideshow');
 
@@ -168,53 +167,31 @@ document.addEventListener('DOMContentLoaded', () => {
       const img = document.createElement('img');
       const imageIndex = (currentIndex + i) % images.length;
       img.src = images[imageIndex];
-      img.style.opacity = '1';
       slideshowElement.appendChild(img);
     }
   }
 
   function slideImages() {
-    if (!slideshowElement || isTransitioning) return;
-    isTransitioning = true;
-
-    // Add fade out effect
-    const currentImages = slideshowElement.children;
-    for (let i = 0; i < currentImages.length; i++) {
-      currentImages[i].style.opacity = '0';
-    }
-
-    // Wait for fade out, then slide
-    setTimeout(() => {
-      slideshowElement.style.transform = 'translateX(-33.3333%)';
-      slideshowElement.addEventListener('transitionend', handleTransitionEnd, { once: true });
-    }, 300);
-  }
-
-  function handleTransitionEnd() {
-    slideshowElement.removeChild(slideshowElement.firstElementChild);
-
-    currentIndex = (currentIndex + 1) % images.length;
-
-    const newImg = document.createElement('img');
-    const newImageIndex = (currentIndex + (imagesOnScreen - 1)) % images.length;
-    newImg.src = images[newImageIndex];
-    newImg.style.opacity = '0';
-    slideshowElement.appendChild(newImg);
-
+    if (!slideshowElement) return;
+    
+    // Move the first image to the end
+    const firstImage = slideshowElement.firstElementChild;
+    slideshowElement.appendChild(firstImage);
+    
+    // Reset the transform
     slideshowElement.style.transition = 'none';
     slideshowElement.style.transform = 'translateX(0)';
-    slideshowElement.offsetHeight; // force reflow
-
-    // Fade in new image
-    setTimeout(() => {
-      newImg.style.opacity = '1';
-      slideshowElement.style.transition = 'transform 0.8s ease';
-      isTransitioning = false;
-    }, 50);
+    
+    // Force a reflow
+    slideshowElement.offsetHeight;
+    
+    // Add the transition back and move
+    slideshowElement.style.transition = 'transform 0.8s ease';
+    slideshowElement.style.transform = 'translateX(-33.3333%)';
   }
 
   initializeSlideshow();
-  setInterval(slideImages, 4000); // Increased interval for smoother experience
+  setInterval(slideImages, 3000);
 
   // ========== Initialize everything else ==========
 
