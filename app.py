@@ -591,10 +591,6 @@ def create_account():
     if not re.match(r"[^@]+@[^@]+\.[^@]+", data['email']):
         return jsonify({'error': 'Invalid email format'}), 400
     
-    # Validate password strength (minimum 8 characters, at least one number and one letter)
-    if not re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", data['password']):
-        return jsonify({'error': 'Password must be at least 8 characters long and contain at least one letter and one number'}), 400
-    
     connection = get_db_connection()
     if not connection:
         return jsonify({'error': 'Database connection failed'}), 500
