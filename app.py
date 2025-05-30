@@ -7,7 +7,7 @@ import mysql.connector
 from mysql.connector import pooling
 from datetime import timedelta
 import re
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Securely use environment variables for DB connection
 # --- DB CONFIG -------------------------------------------------------
@@ -263,14 +263,15 @@ def login():
         return jsonify({"error": "Database connection failed"}), 500
 
     cursor = connection.cursor(dictionary=True)
-    login_query = "SELECT * FROM users WHERE username = %s AND password = %s"
-    cursor.execute(login_query, (username, password))
+    # Get user by username only
+    login_query = "SELECT * FROM users WHERE username = %s"
+    cursor.execute(login_query, (username,))
     user = cursor.fetchone()
 
     cursor.close()
     close_db_connection(connection)
 
-    if user:
+    if user and check_password_hash(user['password'], password):
         session.permanent = True
         session['user_id'] = user['id']
         if user.get('profile_image'):
