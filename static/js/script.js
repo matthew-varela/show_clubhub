@@ -174,7 +174,8 @@
    
      if (!searchButton || !clubSearch) return;  // not on explore_clubs.html
    
-     // Direct search
+     // Direct search with debounce
+     let searchTimeout;
      async function performSearch() {
        const query = clubSearch.value.trim();
        if (!query) {
@@ -259,6 +260,10 @@
    
      // Event listeners
      searchButton.addEventListener('click', performSearch);
+     clubSearch.addEventListener('input', () => {
+       clearTimeout(searchTimeout);
+       searchTimeout = setTimeout(performSearch, 300); // Debounce search
+     });
      clubSearch.addEventListener('keypress', (e) => {
        if (e.key === 'Enter') performSearch();
      });
