@@ -152,7 +152,7 @@
      setInterval(() => {
        container.style.transform = 'translateX(-33.3333%)';
        container.style.transition = 'transform 1.5s ease';
-       sleep(200).then(() => {        // after slide completes
+       sleep(1000).then(() => {        // after slide completes
          index = (index + 1) % images.length;
          container.style.transition = 'none';
          container.style.transform  = 'translateX(0)';
