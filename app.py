@@ -121,6 +121,9 @@ def people_page():
 def account_page():
     return render_template('account.html')
 
+@app.route('/create_account_page')      
+def create_account_page():
+    return render_template('create_account.html')
 
 @app.route('/api/users', methods=['GET'])
 def get_users():
