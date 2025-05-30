@@ -850,3 +850,75 @@ header h1 {
   border: 1px solid #f5c6cb;
 }
 
+/* Password input container and toggle button */
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 40px; /* Make room for the toggle button */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.toggle-password:hover {
+  transform: scale(1.1);
+}
+
+.eye-icon {
+  font-size: 1.2rem;
+  user-select: none;
+}
+
+/* Validation messages */
+.validation-message {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  min-height: 1.2rem;
+}
+
+/* Password strength indicator */
+.password-strength {
+  height: 4px;
+  margin-top: 0.5rem;
+  border-radius: 2px;
+  background-color: #e9ecef;
+  overflow: hidden;
+}
+
+.password-strength-bar {
+  height: 100%;
+  width: 0;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.password-strength-bar.weak {
+  background-color: #dc3545;
+  width: 33.33%;
+}
+
+.password-strength-bar.medium {
+  background-color: #ffc107;
+  width: 66.66%;
+}
+
+.password-strength-bar.strong {
+  background-color: #28a745;
+  width: 100%;
+}
+

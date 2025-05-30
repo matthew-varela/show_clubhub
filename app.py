@@ -6,6 +6,8 @@ from urllib.parse import urlparse
 import mysql.connector
 from mysql.connector import pooling
 from datetime import timedelta
+import re
+from werkzeug.security import generate_password_hash
 
 # Securely use environment variables for DB connection
 # --- DB CONFIG -------------------------------------------------------
@@ -532,6 +534,83 @@ def test_db():
             "status": "error",
             "message": f"Database operation failed: {str(err)}"
         }), 500
+
+@app.route('/api/check_username', methods=['POST'])
+def check_username():
+    data = request.get_json()
+    username = data.get('username')
+    
+    if not username:
+        return jsonify({'error': 'Username is required'}), 400
+    
+    # Check if username exists in database
+    cursor = get_db_connection().cursor()
+    cursor.execute('SELECT id FROM users WHERE username = %s', (username,))
+    result = cursor.fetchone()
+    cursor.close()
+    
+    return jsonify({'exists': result is not None})
+
+@app.route('/api/check_email', methods=['POST'])
+def check_email():
+    data = request.get_json()
+    email = data.get('email')
+    
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+    
+    # Check if email exists in database
+    cursor = get_db_connection().cursor()
+    cursor.execute('SELECT id FROM users WHERE email = %s', (email,))
+    result = cursor.fetchone()
+    cursor.close()
+    
+    return jsonify({'exists': result is not None})
+
+@app.route('/api/create_account', methods=['POST'])
+def create_account():
+    data = request.get_json()
+    
+    # Validate required fields
+    required_fields = ['username', 'email', 'password', 'firstname', 'lastname']
+    for field in required_fields:
+        if not data.get(field):
+            return jsonify({'error': f'{field} is required'}), 400
+    
+    # Validate email format
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", data['email']):
+        return jsonify({'error': 'Invalid email format'}), 400
+    
+    # Validate password strength (minimum 8 characters, at least one number and one letter)
+    if not re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", data['password']):
+        return jsonify({'error': 'Password must be at least 8 characters long and contain at least one letter and one number'}), 400
+    
+    try:
+        cursor = get_db_connection().cursor()
+        
+        # Hash the password
+        hashed_password = generate_password_hash(data['password'])
+        
+        # Insert new user
+        cursor.execute('''
+            INSERT INTO users (username, email, password, firstname, lastname)
+            VALUES (%s, %s, %s, %s, %s)
+        ''', (
+            data['username'],
+            data['email'],
+            hashed_password,
+            data['firstname'],
+            data['lastname']
+        ))
+        
+        get_db_connection().commit()
+        cursor.close()
+        
+        return jsonify({'message': 'Account created successfully'}), 201
+        
+    except Exception as e:
+        get_db_connection().rollback()
+        return jsonify({'error': 'Failed to create account'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
