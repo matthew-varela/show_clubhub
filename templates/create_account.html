@@ -103,6 +103,7 @@
       // Clear previous validation messages
       document.querySelectorAll('.validation-message').forEach(el => el.textContent = '');
       document.getElementById('resultMessage').textContent = '';
+      document.getElementById('resultMessage').className = 'message-box';
       
       const formData = {
         username: document.getElementById('username').value.trim(),
@@ -112,7 +113,16 @@
         lastname: document.getElementById('lastname').value.trim()
       };
 
+      // Basic client-side validation
+      if (!formData.username || !formData.email || !formData.password || !formData.firstname || !formData.lastname) {
+        const messageBox = document.getElementById('resultMessage');
+        messageBox.textContent = 'Please fill in all fields.';
+        messageBox.className = 'message-box error';
+        return;
+      }
+
       try {
+        console.log('Checking username availability...');
         // First check if username is taken
         const usernameCheck = await fetch('/api/check_username', {
           method: 'POST',
@@ -121,7 +131,8 @@
         });
         
         if (!usernameCheck.ok) {
-          throw new Error('Failed to check username');
+          const errorData = await usernameCheck.json();
+          throw new Error(errorData.error || 'Failed to check username');
         }
         
         const usernameResult = await usernameCheck.json();
@@ -130,6 +141,7 @@
           return;
         }
 
+        console.log('Checking email availability...');
         // Then check if email is taken
         const emailCheck = await fetch('/api/check_email', {
           method: 'POST',
@@ -138,7 +150,8 @@
         });
         
         if (!emailCheck.ok) {
-          throw new Error('Failed to check email');
+          const errorData = await emailCheck.json();
+          throw new Error(errorData.error || 'Failed to check email');
         }
         
         const emailResult = await emailCheck.json();
@@ -147,6 +160,7 @@
           return;
         }
 
+        console.log('Creating account...');
         // If both checks pass, create the account
         const response = await fetch('/api/create_account', {
           method: 'POST',
@@ -154,12 +168,26 @@
           body: JSON.stringify(formData)
         });
 
+        const result = await response.json();
+
         if (!response.ok) {
-          throw new Error('Failed to create account');
+          // Check if it's a validation error
+          if (result.error) {
+            if (result.error.includes('Password must be')) {
+              document.getElementById('passwordValidation').textContent = result.error;
+              return;
+            } else if (result.error.includes('Invalid email format')) {
+              document.getElementById('emailValidation').textContent = result.error;
+              return;
+            } else {
+              throw new Error(result.error);
+            }
+          } else {
+            throw new Error('Failed to create account');
+          }
         }
 
-        const result = await response.json();
-        
+        console.log('Account created successfully!');
         // Show success message
         const messageBox = document.getElementById('resultMessage');
         messageBox.textContent = 'Account created successfully! Redirecting to login...';
@@ -171,9 +199,9 @@
         }, 2000);
 
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error creating account:', error);
         const messageBox = document.getElementById('resultMessage');
-        messageBox.textContent = 'Error creating account. Please try again.';
+        messageBox.textContent = `Error: ${error.message}`;
         messageBox.className = 'message-box error';
       }
     });

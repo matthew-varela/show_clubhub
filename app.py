@@ -544,10 +544,15 @@ def check_username():
         return jsonify({'error': 'Username is required'}), 400
     
     # Check if username exists in database
-    cursor = get_db_connection().cursor()
+    connection = get_db_connection()
+    if not connection:
+        return jsonify({'error': 'Database connection failed'}), 500
+    
+    cursor = connection.cursor()
     cursor.execute('SELECT id FROM users WHERE username = %s', (username,))
     result = cursor.fetchone()
     cursor.close()
+    close_db_connection(connection)
     
     return jsonify({'exists': result is not None})
 
@@ -560,10 +565,15 @@ def check_email():
         return jsonify({'error': 'Email is required'}), 400
     
     # Check if email exists in database
-    cursor = get_db_connection().cursor()
+    connection = get_db_connection()
+    if not connection:
+        return jsonify({'error': 'Database connection failed'}), 500
+    
+    cursor = connection.cursor()
     cursor.execute('SELECT id FROM users WHERE email = %s', (email,))
     result = cursor.fetchone()
     cursor.close()
+    close_db_connection(connection)
     
     return jsonify({'exists': result is not None})
 
@@ -585,8 +595,12 @@ def create_account():
     if not re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", data['password']):
         return jsonify({'error': 'Password must be at least 8 characters long and contain at least one letter and one number'}), 400
     
+    connection = get_db_connection()
+    if not connection:
+        return jsonify({'error': 'Database connection failed'}), 500
+    
     try:
-        cursor = get_db_connection().cursor()
+        cursor = connection.cursor()
         
         # Hash the password
         hashed_password = generate_password_hash(data['password'])
@@ -603,14 +617,18 @@ def create_account():
             data['lastname']
         ))
         
-        get_db_connection().commit()
+        connection.commit()
         cursor.close()
+        close_db_connection(connection)
         
         return jsonify({'message': 'Account created successfully'}), 201
         
     except Exception as e:
-        get_db_connection().rollback()
-        return jsonify({'error': 'Failed to create account'}), 500
+        print(f"Error creating account: {e}")  # Add logging
+        connection.rollback()
+        cursor.close()
+        close_db_connection(connection)
+        return jsonify({'error': f'Failed to create account: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
