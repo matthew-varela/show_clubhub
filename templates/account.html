@@ -137,11 +137,13 @@
             // If user has a profile image
             if (profile_image) {
               const timestamp = new Date().getTime();
-              profileImage.src = `${profile_image}?t=${timestamp}`;
+              profileImage.src = profile_image;
               profileImage.onerror = function() {
                 console.error('Failed to load profile image:', profile_image);
                 this.src = '/static/images/blank-prof-pic.png';
               };
+            } else {
+              profileImage.src = '/static/images/blank-prof-pic.png';
             }
 
             // Populate Clubs in right box

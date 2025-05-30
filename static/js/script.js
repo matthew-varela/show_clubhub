@@ -162,6 +162,112 @@
    }
    
    /* -------------------------------------------------
+      SECTION 7:  Club Search Functionality
+      ------------------------------------------------- */
+   function setupClubSearch() {
+     const searchButton = $('#searchButton');
+     const clubSearch = $('#clubSearch');
+     const searchResults = $('#searchResults');
+     const collegeSearchButton = $('#collegeSearchButton');
+     const collegeSelect = $('#collegeSelect');
+     const collegeSearchResults = $('#collegeSearchResults');
+   
+     if (!searchButton || !clubSearch) return;  // not on explore_clubs.html
+   
+     // Direct search
+     async function performSearch() {
+       const query = clubSearch.value.trim();
+       if (!query) {
+         searchResults.innerHTML = '';
+         return;
+       }
+   
+       try {
+         const response = await fetch('/api/clubs', {
+           method: 'GET',
+           credentials: 'include'
+         });
+         
+         if (!response.ok) throw new Error('Failed to fetch clubs');
+         
+         const clubs = await response.json();
+         const filteredClubs = clubs.filter(club => 
+           club.name.toLowerCase().includes(query.toLowerCase())
+         );
+   
+         // Display results
+         searchResults.innerHTML = '';
+         if (filteredClubs.length === 0) {
+           searchResults.innerHTML = '<div class="no-results">No clubs found</div>';
+           return;
+         }
+   
+         filteredClubs.forEach(club => {
+           const div = document.createElement('div');
+           div.className = 'user-result-item';
+           const link = document.createElement('a');
+           link.href = `/clubpage_page?club_id=${club.id}`;
+           link.textContent = club.name;
+           div.appendChild(link);
+           searchResults.appendChild(div);
+         });
+       } catch (error) {
+         console.error('Search failed:', error);
+         searchResults.innerHTML = '<div class="error">Error performing search</div>';
+       }
+     }
+   
+     // College-based search
+     async function performCollegeSearch() {
+       const collegeId = collegeSelect.value;
+       if (!collegeId) {
+         collegeSearchResults.innerHTML = '';
+         return;
+       }
+   
+       try {
+         const response = await fetch(`/api/clubs/by_college/${collegeId}`, {
+           method: 'GET',
+           credentials: 'include'
+         });
+         
+         if (!response.ok) throw new Error('Failed to fetch clubs');
+         
+         const clubs = await response.json();
+   
+         // Display results
+         collegeSearchResults.innerHTML = '';
+         if (clubs.length === 0) {
+           collegeSearchResults.innerHTML = '<div class="no-results">No clubs found for this college</div>';
+           return;
+         }
+   
+         clubs.forEach(club => {
+           const div = document.createElement('div');
+           div.className = 'user-result-item';
+           const link = document.createElement('a');
+           link.href = `/clubpage_page?club_id=${club.id}`;
+           link.textContent = club.name;
+           div.appendChild(link);
+           collegeSearchResults.appendChild(div);
+         });
+       } catch (error) {
+         console.error('College search failed:', error);
+         collegeSearchResults.innerHTML = '<div class="error">Error performing search</div>';
+       }
+     }
+   
+     // Event listeners
+     searchButton.addEventListener('click', performSearch);
+     clubSearch.addEventListener('keypress', (e) => {
+       if (e.key === 'Enter') performSearch();
+     });
+   
+     collegeSearchButton.addEventListener('click', performCollegeSearch);
+     collegeSelect.addEventListener('change', performCollegeSearch);
+   }
+   
+   /* -------------------------------------------------
       SECTION 6:  Universal start-up
       ------------------------------------------------- */
    document.addEventListener('DOMContentLoaded', () => {
@@ -171,6 +277,7 @@
      setupLogoutButton();
      setupSmoothScroll();
      setupSlideshow();
+     setupClubSearch();
    
      // (Search, welcome modal, etc. kept exactly as in v1; copy them here
      //  if you were using those features on other pages.)
