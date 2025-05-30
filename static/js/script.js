@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show profile picture navigation
     const profilePicNavItem = document.getElementById('profilePicNavItem');
     if (profilePicNavItem) {
-      profilePicNavItem.style.display = 'block';
+      profilePicNavItem.style.display = 'flex';
     }
 
     // Show and set mini profile pic

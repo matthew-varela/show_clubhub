@@ -342,6 +342,7 @@ header h1 {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 2px solid var(--umich-blue);
+  display: block; /* Ensure the image is always displayed when visible */
 }
 
 .mini-profile-pic:hover {
@@ -349,16 +350,14 @@ header h1 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-#profilePicNavItem {
-  display: flex;
-  align-items: center;
-  margin-left: 1rem;
-}
-
+/* Ensure the link area is clickable */
 #profilePicNavItem a {
   text-decoration: none;
   display: flex;
   align-items: center;
+  cursor: pointer;
+  padding: 2px; /* Add some padding to make the clickable area larger */
+  border-radius: 50%; /* Match the image's border radius */
 }
 
 /* -------------------------------------------------

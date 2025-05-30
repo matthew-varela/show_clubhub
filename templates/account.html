@@ -21,17 +21,26 @@
   <!-- Main Content -->
   <div class="main-content">
     <!-- Top Navigation -->
-    <nav>
-      <ul class="nav-list">
+    <nav class="navbar">
+      <!-- Left: UMich Logo -->
+      <div class="nav-left">
+        <img src="{{ url_for('static', filename='images/umich_logo.png') }}" alt="UMich Logo" class="logo-image" />
+      </div>
+    
+      <!-- Center: Nav links -->
+      <ul class="nav-center nav-list">
         <li><a href="/">Home</a></li>
         <li><a href="/about_page">About Us</a></li>
         <li><a href="/contact_page">Contact</a></li>
-
-        <!-- Show this by default if not logged in (script.js hides if logged in) -->
-        <li id="loginNavItem"><a href="/login_page">Login</a></li>
-
-        <!-- Profile picture will be shown/hidden by script.js -->
-        <li id="profilePicNavItem" style="display: none;">
+      </ul>
+    
+      <!-- Right: Login / Profile Picture -->
+      <div class="nav-right">
+        <!-- Login link (shown if not logged in) -->
+        <a id="loginNavItem" href="/login_page">Login</a>
+    
+        <!-- Profile picture (shown if logged in) -->
+        <div id="profilePicNavItem" style="display: none;">
           <a href="/account_page">
             <img 
               id="miniProfilePic" 
@@ -41,9 +50,8 @@
               style="display: none;" 
             />
           </a>
-        </li>
-      </ul>
-      <img src="{{ url_for('static', filename='images/umich_logo.png') }}" alt="UMich Logo" class="logo-image" />
+        </div>
+      </div>
     </nav>
 
     <!-- Page Header -->
