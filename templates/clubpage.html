@@ -107,16 +107,15 @@
           });
           if (presResponse.ok) {
             const presData = await presResponse.json();
-            const fullName = `${presData.firstname} ${presData.lastname}`;
 
-            // Make the President name a clickable link to userpage.html
+            // Make the President name a clickable link to userpage
             const presElem = document.getElementById('clubPresident');
             presElem.textContent = ""; // Clear "Loading..."
 
             const presLink = document.createElement('a');
-            presLink.href = `userpage.html?user_id=${presData.id}`;
-            presLink.textContent = fullName;
-            presLink.classList.add('custom-link'); // <-- Add our custom link class
+            presLink.textContent = presData.firstname + ' ' + presData.lastname;
+            presLink.href = `/userpage_page?user_id=${presData.id}`;
+            presLink.classList.add('custom-link');
             presElem.appendChild(presLink);
 
           } else {
@@ -133,16 +132,15 @@
           });
           if (vpResponse.ok) {
             const vpData = await vpResponse.json();
-            const fullName = `${vpData.firstname} ${vpData.lastname}`;
 
-            // Make the VP name a clickable link to userpage.html
+            // Make the VP name a clickable link to userpage
             const vpElem = document.getElementById('clubVP');
             vpElem.textContent = ""; // Clear "Loading..."
 
             const vpLink = document.createElement('a');
-            vpLink.href = `userpage.html?user_id=${vpData.id}`;
-            vpLink.textContent = fullName;
-            vpLink.classList.add('custom-link'); // <-- Add our custom link class
+            vpLink.textContent = vpData.firstname + ' ' + vpData.lastname;
+            vpLink.href = `/userpage_page?user_id=${vpData.id}`;
+            vpLink.classList.add('custom-link');
             vpElem.appendChild(vpLink);
 
           } else {
