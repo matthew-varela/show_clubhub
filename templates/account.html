@@ -36,20 +36,23 @@
     
       <!-- Right: Login / Profile Picture -->
       <div class="nav-right">
-        <!-- Login link (shown if not logged in) -->
-        <a id="loginNavItem" href="/login_page">Login</a>
-    
-        <!-- Profile picture (shown if logged in) -->
-        <div id="profilePicNavItem" style="display: none;">
-          <a href="/account_page" class="profile-link">
-            <img 
-              id="miniProfilePic" 
-              class="mini-profile-pic" 
-              src="{{ url_for('static', filename='images/blank-prof-pic.png') }}" 
-              alt="Profile" 
-              style="display: none;" 
+                      <!-- BEGIN ClubHub login/account block -->
+          <!-- Login link (shown when logged-out) -->
+          <a id="loginNavItem" href="/login_page">Login</a>
+
+          <!-- Account link + mini pic (shown when logged-in) -->
+          <a id="accountNavItem" href="/account_page" style="display:none;">Account</a>
+
+          <div id="profilePicNavItem" style="display:none;">
+            <img
+              id="miniProfilePic"
+              class="mini-profile-pic"
+              src="{{ url_for('static', filename='images/blank-prof-pic.png') }}"
+              alt="Profile"
+              style="display:none;"
             />
-          </a>
+          </div>
+          <!-- END ClubHub login/account block -->
         </div>
       </div>
     </nav>

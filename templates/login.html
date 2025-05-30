@@ -38,15 +38,23 @@
            Either show "Login" if not logged in,
            OR "Account" + mini profile pic if logged in. -->
       <div class="nav-right">
-        <!-- Account link + mini pic (shown if logged in) -->
-        <a id="accountNavItem" href="/account_page" style="display: none;">Account</a>
-        <img 
-          id="miniProfilePic" 
-          class="mini-profile-pic" 
-          src="{{ url_for('static', filename='images/blank-prof-pic.png') }}" 
-          alt="Profile" 
-          style="display: none;" 
-        />
+                      <!-- BEGIN ClubHub login/account block -->
+          <!-- Login link (shown when logged-out) -->
+          <a id="loginNavItem" href="/login_page">Login</a>
+
+          <!-- Account link + mini pic (shown when logged-in) -->
+          <a id="accountNavItem" href="/account_page" style="display:none;">Account</a>
+
+          <div id="profilePicNavItem" style="display:none;">
+            <img
+              id="miniProfilePic"
+              class="mini-profile-pic"
+              src="{{ url_for('static', filename='images/blank-prof-pic.png') }}"
+              alt="Profile"
+              style="display:none;"
+            />
+          </div>
+          <!-- END ClubHub login/account block -->
       </div>
     </nav>
 
