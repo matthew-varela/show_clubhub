@@ -36,14 +36,12 @@
     
       <!-- Right: Login / Profile Picture -->
       <div class="nav-right">
-                      <!-- BEGIN ClubHub login/account block -->
-          <!-- Login link (shown when logged-out) -->
-          <a id="loginNavItem" href="/login_page">Login</a>
+        <!-- Login link (shown when logged-out) -->
+        <a id="loginNavItem" href="/login_page">Login</a>
 
-          <!-- Account link + mini pic (shown when logged-in) -->
-          <a id="accountNavItem" href="/account_page" style="display:none;">Account</a>
-
-          <div id="profilePicNavItem" style="display:none;">
+        <!-- Profile picture (shown when logged-in) -->
+        <div id="profilePicNavItem" style="display:none;">
+          <a href="/account_page">
             <img
               id="miniProfilePic"
               class="mini-profile-pic"
@@ -51,8 +49,7 @@
               alt="Profile"
               style="display:none;"
             />
-          </div>
-          <!-- END ClubHub login/account block -->
+          </a>
         </div>
       </div>
     </nav>
@@ -119,7 +116,7 @@
 
       // 1) Fetch user data (current user)
       try {
-        const userResponse = await fetch('http://127.0.0.1:5000/api/current_user', {
+        const userResponse = await fetch('/api/current_user', {
           method: 'GET',
           credentials: 'include'
         });
@@ -182,7 +179,7 @@
         formData.append('profilePicture', file);
 
         try {
-          const uploadResponse = await fetch('http://127.0.0.1:5000/api/users/upload_picture', {
+          const uploadResponse = await fetch('/api/users/upload_picture', {
             method: 'POST',
             credentials: 'include',
             body: formData
