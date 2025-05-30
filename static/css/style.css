@@ -850,40 +850,6 @@ header h1 {
   border: 1px solid #f5c6cb;
 }
 
-/* Password input container and toggle button */
-.password-input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.password-input-container input {
-  width: 100%;
-  padding-right: 40px; /* Make room for the toggle button */
-}
-
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease;
-}
-
-.toggle-password:hover {
-  transform: scale(1.1);
-}
-
-.eye-icon {
-  font-size: 1.2rem;
-  user-select: none;
-}
-
 /* Validation messages */
 .validation-message {
   color: #dc3545;
