@@ -22,32 +22,36 @@
    }
    
    function updateNavbarUI(user) {
-     const loginLink   = $('#loginNavItem');
-     const picWrapper  = $('#profilePicNavItem');      // <div> that wraps mini pic
-     const miniPic     = $('#miniProfilePic');
-   
-     const show = el => el && (el.style.display = '');
-     const hide = el => el && (el.style.display = 'none');
-   
-     if (user) {
-       hide(loginLink);
-       show(picWrapper);
-       show(miniPic);
-   
-       // choose avatar
-       if (user.profile_image && user.profile_image.trim() !== '') {
-         miniPic.src = `${user.profile_image}?t=${Date.now()}`;  // bust caching
-       } else {
-         miniPic.src = '/static/images/blank-prof-pic.png';
-       }
-   
-       // make the picture clickable even if HTML is missing a <a>
-       miniPic.onclick = () => (window.location.href = '/account_page');
-     } else {
-       show(loginLink);
-       hide(picWrapper);
-     }
-   }
+    const loginLink   = $('#loginNavItem');
+    const picWrapper  = $('#profilePicNavItem');
+    const miniPic     = $('#miniProfilePic');
+  
+    const show = el => el && (el.style.display = '');
+    const hide = el => el && (el.style.display = 'none');
+  
+    if (user) {
+      hide(loginLink);
+      show(picWrapper);
+      show(miniPic);
+  
+      // ── choose the correct avatar ──────────────────────────────
+      if (user.profile_image && user.profile_image.trim() !== '') {
+        // data-URI?  → use as-is.   ordinary URL?  → add cache-buster.
+        if (user.profile_image.startsWith('data:')) {
+          miniPic.src = user.profile_image;
+        } else {
+          miniPic.src = `${user.profile_image}?t=${Date.now()}`;
+        }
+      } else {
+        miniPic.src = '/static/images/blank-prof-pic.png';
+      }
+  
+      miniPic.onclick = () => (window.location.href = '/account_page');
+    } else {
+      show(loginLink);
+      hide(picWrapper);
+    }
+  }
    
    async function ensureNavbar() {                      // run at page-load
      const user = await fetchCurrentUser();
