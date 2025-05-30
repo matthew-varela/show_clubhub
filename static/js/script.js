@@ -26,12 +26,13 @@
      const picWrapper  = $('#profilePicNavItem');      // <div> that wraps mini pic
      const miniPic     = $('#miniProfilePic');
    
-     const show = el => el && (el.style.display = 'flex');
+     const show = el => el && (el.style.display = '');
      const hide = el => el && (el.style.display = 'none');
    
      if (user) {
        hide(loginLink);
        show(picWrapper);
+       show(miniPic);
    
        // choose avatar
        if (user.profile_image && user.profile_image.trim() !== '') {
