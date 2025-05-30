@@ -66,6 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         miniPic.src = '/static/images/blank-prof-pic.png';
       }
+
+      // Add click handler to ensure navigation works
+      const profileLink = miniPic.closest('.profile-link');
+      if (profileLink) {
+        profileLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = '/account_page';
+        });
+      }
     }
 
     console.log(`Hello, ${user.firstname}!`);

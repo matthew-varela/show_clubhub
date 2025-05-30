@@ -334,6 +334,19 @@ header h1 {
   text-decoration: underline;
 }
 
+.profile-link {
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.profile-link:hover {
+  transform: scale(1.05);
+}
+
 .mini-profile-pic {
   width: 40px;
   height: 40px;
@@ -342,7 +355,7 @@ header h1 {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 2px solid var(--umich-blue);
-  display: block; /* Ensure the image is always displayed when visible */
+  display: block;
 }
 
 .mini-profile-pic:hover {
@@ -350,14 +363,10 @@ header h1 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Ensure the link area is clickable */
-#profilePicNavItem a {
-  text-decoration: none;
+#profilePicNavItem {
   display: flex;
   align-items: center;
-  cursor: pointer;
-  padding: 2px; /* Add some padding to make the clickable area larger */
-  border-radius: 50%; /* Match the image's border radius */
+  margin-left: 1rem;
 }
 
 /* -------------------------------------------------
