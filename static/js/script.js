@@ -37,27 +37,58 @@ document.addEventListener('DOMContentLoaded', () => {
   const accountNavItem = document.getElementById('accountNavItem');
   const miniPic        = document.getElementById('miniProfilePic');
 
-  function showLoggedInUI(user) {
-    if (loginNavItem)   loginNavItem.style.display   = 'none';
-    if (accountNavItem) accountNavItem.style.display = 'inline-block';
+  // Show/hide UI for logged-in user
+  const showLoggedInUI = (user) => {
+    // Hide login link
+    if (loginNavItem) {
+      loginNavItem.style.display = 'none';
+    }
+
+    // Show profile picture navigation
+    const profilePicNavItem = document.getElementById('profilePicNavItem');
+    if (profilePicNavItem) {
+      profilePicNavItem.style.display = 'block';
+    }
+
+    // Show and set mini profile pic
     if (miniPic) {
-      miniPic.style.display = 'inline-block';
-      if (user.profile_image && user.profile_image.startsWith('data:')) {
-        miniPic.src = user.profile_image; // data‑URI → works without cache busting
-      } else if (user.profile_image) {
-        miniPic.src = `${user.profile_image}?t=${Date.now()}`; // normal file URL
+      miniPic.style.display = 'block';
+      // Check if user has a profile image and it's not empty
+      if (user.profile_image && user.profile_image.trim() !== '') {
+        // Add timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        miniPic.src = `${user.profile_image}?t=${timestamp}`;
+        // Add error handling for the image
+        miniPic.onerror = function() {
+          console.error('Failed to load profile image:', user.profile_image);
+          this.src = '/static/images/blank-prof-pic.png';
+        };
       } else {
         miniPic.src = '/static/images/blank-prof-pic.png';
       }
     }
-    console.log(`Hello, ${user.firstname}!`);
-  }
 
-  function showLoggedOutUI() {
-    if (loginNavItem)   loginNavItem.style.display   = 'inline-block';
-    if (accountNavItem) accountNavItem.style.display = 'none';
-    if (miniPic)        miniPic.style.display        = 'none';
-  }
+    console.log(`Hello, ${user.firstname}!`);
+  };
+
+  // Show/hide UI for logged-out user
+  const showLoggedOutUI = () => {
+    // Show login link
+    if (loginNavItem) {
+      loginNavItem.style.display = 'block';
+    }
+
+    // Hide profile picture navigation
+    const profilePicNavItem = document.getElementById('profilePicNavItem');
+    if (profilePicNavItem) {
+      profilePicNavItem.style.display = 'none';
+    }
+
+    // Hide mini profile pic
+    if (miniPic) {
+      miniPic.style.display = 'none';
+    }
+  };
 
   async function checkLoginStatus() {
     try {

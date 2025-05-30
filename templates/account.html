@@ -30,8 +30,18 @@
         <!-- Show this by default if not logged in (script.js hides if logged in) -->
         <li id="loginNavItem"><a href="/login_page">Login</a></li>
 
-        <!-- Hidden by default, script.js shows if logged in -->
-        <li id="accountNavItem" style="display: none;"><a href="/account_page">Account</a></li>
+        <!-- Profile picture will be shown/hidden by script.js -->
+        <li id="profilePicNavItem" style="display: none;">
+          <a href="/account_page">
+            <img 
+              id="miniProfilePic" 
+              class="mini-profile-pic" 
+              src="{{ url_for('static', filename='images/blank-prof-pic.png') }}" 
+              alt="Profile" 
+              style="display: none;" 
+            />
+          </a>
+        </li>
       </ul>
       <img src="{{ url_for('static', filename='images/umich_logo.png') }}" alt="UMich Logo" class="logo-image" />
     </nav>
