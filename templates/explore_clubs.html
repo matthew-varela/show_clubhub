@@ -9,19 +9,6 @@
   <!-- Updated stylesheet reference -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   <title>Explore Clubs</title>
-  <style>
-    /* Example styling to place searches side by side */
-    .search-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin: 20px 0;
-      gap: 20px; 
-    }
-    .search-left, .search-right {
-      flex: 1;
-    }
-  </style>
 </head>
 <body>
   <!-- Vertical Sidebar -->
@@ -81,7 +68,7 @@
     <div class="search-container">
       <!-- Left: Find Clubs By College -->
       <div class="search-left">
-        <h2>Find Clubs By College</h2>
+        <h2 class="search-section-header">Find Clubs By College</h2>
         <div class="college-search">
           <select id="collegeSelect">
             <option value="" selected disabled>Select</option>
@@ -105,7 +92,7 @@
 
       <!-- Right: Direct Search -->
       <div class="search-right">
-        <h2>Direct Search</h2>
+        <h2 class="search-section-header">Direct Search</h2>
         <div class="search-bar">
           <input
             type="text"

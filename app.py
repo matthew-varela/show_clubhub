@@ -11,26 +11,33 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # Securely use environment variables for DB connection
 # --- DB CONFIG -------------------------------------------------------
-database_url = os.getenv('JAWSDB_MARIA_URL') # JawsDB URL from Heroku
+database_url = os.getenv('JAWSDB_MARIA_URL')  # Try to read the JawsDB URL Heroku gives you
 if database_url:
+    # 1) Parse that URL into its components
     url = urlparse(database_url)
+
+    # 2) Build a production-ready config dict
     db_config = {
-        'host': url.hostname,
-        'user': url.username,
-        'password': url.password,
-        'database': url.path[1:],
-        'port': url.port or 3306,
-        # NEW: SSL & sane timeouts
-        'ssl_ca': os.getenv('MYSQL_SSL_CA', '/app/certs/rds-ca-2019-root.pem'),
-        'connection_timeout': 5,
-        'pool_name': 'mypool',
+        'host': url.hostname,                          # e.g. xyz123.db.ondigitalocean.com
+        'user': url.username,                          # the DB username from the URL
+        'password': url.password,                      # the DB password from the URL
+        'database': url.path[1:],                      # the part after the slash (strip leading slash)
+        'port': url.port or 3306,                      # port from URL, default MySQL port if missing
+
+        # --- Production extras ---
+        'ssl_ca': os.getenv('MYSQL_SSL_CA',
+                           '/app/certs/rds-ca-2019-root.pem'),
+                              # Path to the CA cert for SSL (Heroku provides one, or you bundle your own)
+        'connection_timeout': 5,                       # Seconds before "can’t reach DB" error
+        'pool_name': 'mypool',                         # A name to identify this pool
         'pool_size': int(os.getenv('MYSQL_POOL_SIZE', 3)),
-        'pool_reset_session': True,
+                              # How many connections to keep in the pool
+        'pool_reset_session': True,                    # Reset session state when reusing
     }
 
     print(f"Using JawsDB configuration with host: {url.hostname}")
 else:
-    # Local fallback for development/testing
+    # 3) If no JAWSDB_MARIA_URL is set, assume local dev environment
     db_config = {
         'host': os.environ.get('DB_HOST', 'localhost'),
         'user': os.environ.get('DB_USER', 'root'),
@@ -40,6 +47,7 @@ else:
         'pool_size': 5
     }
     print(f"Using local configuration with host: {db_config['host']}")
+
 # ---------------------------------------------------------------------
 
 app = Flask(__name__)
@@ -63,7 +71,7 @@ CORS(
     supports_credentials=True
 )
 
-app.permanent_session_lifetime = timedelta(minutes=20)
+app.permanent_session_lifetime = timedelta(minutes=10)
 
 def get_db_connection():
     """
