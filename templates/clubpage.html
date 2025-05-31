@@ -79,7 +79,7 @@
 
       // 2) Fetch the club data
       try {
-        const clubResponse = await fetch(`http://127.0.0.1:5000/api/clubs/${clubId}`, {
+        const clubResponse = await fetch(`/api/clubs/${clubId}`, {
           method: 'GET',
           credentials: 'include' // if you use sessions
         });
@@ -98,7 +98,7 @@
 
         // 3) Fetch President user info
         if (pres) {
-          const presResponse = await fetch(`http://127.0.0.1:5000/api/users/${pres}`, {
+          const presResponse = await fetch(`/api/users/${pres}`, {
             credentials: 'include'
           });
           if (presResponse.ok) {
@@ -123,7 +123,7 @@
 
         // 4) Fetch VP user info
         if (vp) {
-          const vpResponse = await fetch(`http://127.0.0.1:5000/api/users/${vp}`, {
+          const vpResponse = await fetch(`/api/users/${vp}`, {
             credentials: 'include'
           });
           if (vpResponse.ok) {

@@ -28,7 +28,7 @@ if database_url:
         'ssl_ca': os.getenv('MYSQL_SSL_CA',
                            '/app/certs/rds-ca-2019-root.pem'),
                               # Path to the CA cert for SSL (Heroku provides one, or you bundle your own)
-        'connection_timeout': 5,                       # Seconds before "can’t reach DB" error
+        'connection_timeout': 5,                       # Seconds before "can't reach DB" error
         'pool_name': 'mypool',                         # A name to identify this pool
         'pool_size': int(os.getenv('MYSQL_POOL_SIZE', 3)),
                               # How many connections to keep in the pool
@@ -634,6 +634,10 @@ def create_account():
         cursor.close()
         close_db_connection(connection)
         return jsonify({'error': f'Failed to create account: {str(e)}'}), 500
+
+@app.route('/clubpage_page')
+def clubpage_page():
+    return render_template('clubpage.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
