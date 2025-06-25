@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 # Load .env if present (for local development)
 load_dotenv()
@@ -79,6 +80,7 @@ ASGI_APPLICATION = "clubhub_backend.asgi.application"
 # -------------------------------------------------------------
 # Database (MySQL)
 # -------------------------------------------------------------
+# Default local-development connection (can be overridden below)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -87,15 +89,15 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD", ""),
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", "3306"),
-        "OPTIONS": {
-            "ssl": {
-                "ca": os.getenv(
-                    "MYSQL_SSL_CA", str(BASE_DIR / "certs" / "rds-ca-2019-root.pem")
-                )
-            },
-        },
     }
 }
+
+# If DATABASE_URL or CLEARDB_DATABASE_URL is provided (e.g. on Heroku)
+DB_URL = os.getenv("DATABASE_URL") or os.getenv("CLEARDB_DATABASE_URL")
+if DB_URL:
+    DATABASES["default"] = dj_database_url.parse(DB_URL, conn_max_age=CONN_MAX_AGE)
+    # Ensure Django uses MySQL backend even if scheme is mysql://
+    DATABASES["default"]["ENGINE"] = "django.db.backends.mysql"
 
 # Connection pool settings (optional) — Django maintains persistent connections automatically
 CONN_MAX_AGE = int(os.getenv("DJANGO_CONN_MAX_AGE", 60))

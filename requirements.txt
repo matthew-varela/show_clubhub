@@ -16,3 +16,5 @@ Jinja2>=3.1
 gunicorn
 
 whitenoise>=6.6
+
+dj-database-url>=2.1
