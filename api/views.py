@@ -10,6 +10,8 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from werkzeug.security import generate_password_hash, check_password_hash
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from .models import User, Club, UserClubs
 from .serializers import UserSerializer, ClubSerializer
@@ -125,8 +127,10 @@ class ClubViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(list(clubs))
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
+    authentication_classes = []  # Disable auth to allow anonymous login
 
     def post(self, request: HttpRequest):
         username = request.data.get("username")
@@ -147,7 +151,11 @@ class LoginView(APIView):
             return Response({"error": "Invalid username or password"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class LogoutView(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
+
     def post(self, request):
         request.session.flush()
         return Response({"message": "Logged out"})
