@@ -133,22 +133,26 @@ class LoginView(APIView):
     authentication_classes = []  # Disable auth to allow anonymous login
 
     def post(self, request: HttpRequest):
-        username = request.data.get("username")
-        password = request.data.get("password")
-        if not username or not password:
-            return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
-
         try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            return Response({"error": "Invalid username or password"}, status=status.HTTP_401_UNAUTHORIZED)
+            username = request.data.get("username")
+            password = request.data.get("password")
+            if not username or not password:
+                return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if check_password_hash(user.password, password):
-            # Use Django session
-            request.session["user_id"] = user.id
-            return Response({"message": "Login successful", "user": UserSerializer(user).data})
-        else:
-            return Response({"error": "Invalid username or password"}, status=status.HTTP_401_UNAUTHORIZED)
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                return Response({"error": "Invalid username or password"}, status=status.HTTP_401_UNAUTHORIZED)
+
+            if check_password_hash(user.password, password):
+                # Persist session
+                request.session["user_id"] = user.id
+                return Response({"message": "Login successful", "user": UserSerializer(user).data})
+            else:
+                return Response({"error": "Invalid username or password"}, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            # Catch-all to ensure JSON response (important for front-end fetch())
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
