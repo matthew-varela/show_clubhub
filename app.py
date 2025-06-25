@@ -16,7 +16,7 @@ if database_url:
     # 1) Parse that URL into its components
     url = urlparse(database_url)
 
-    # 2) Build a production-ready config dict
+    # 2) Build a production-ready config dict. This data structure is like a C++ struct. In python its called a dict.
     db_config = {
         'host': url.hostname,                          # e.g. xyz123.db.ondigitalocean.com
         'user': url.username,                          # the DB username from the URL

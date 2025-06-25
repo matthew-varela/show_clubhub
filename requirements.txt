@@ -1,4 +1,16 @@
-Flask
+# Backend requirements switched to Django
+Django>=5.0
+# REST API framework
+djangorestframework>=3.14
+# MySQL driver and helpers
+mysqlclient>=2.2
+django-mysql>=4.10
+# Env helper
+python-dotenv>=1.0
+# Werkzeug security (for password hashing compatibility with existing table)
+Werkzeug>=3.0
+# Template engine
+Jinja2>=3.1
+
+# Production WSGI server
 gunicorn
-mysql-connector-python
-flask-cors
