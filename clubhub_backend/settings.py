@@ -47,6 +47,16 @@ MIDDLEWARE = [
 ROOT_URLCONF = "clubhub_backend.urls"
 
 TEMPLATES = [
+    # Jinja2 backend to support existing Flask templates (must be first so it picks .html files)
+    {
+        "BACKEND": "django.template.backends.jinja2.Jinja2",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "environment": "clubhub_backend.jinja2_env.environment",
+        },
+    },
+    # Django Templates backend (second)
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [BASE_DIR / "templates"],
@@ -58,15 +68,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
-        },
-    },
-    # Jinja2 backend to support existing Flask templates
-    {
-        "BACKEND": "django.template.backends.jinja2.Jinja2",
-        "DIRS": [BASE_DIR / "templates"],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "environment": "clubhub_backend.jinja2_env.environment",
         },
     },
 ]
