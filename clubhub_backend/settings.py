@@ -80,6 +80,9 @@ ASGI_APPLICATION = "clubhub_backend.asgi.application"
 # -------------------------------------------------------------
 # Database (MySQL)
 # -------------------------------------------------------------
+# How long persistent DB connections should stay open (seconds)
+CONN_MAX_AGE = int(os.getenv("DJANGO_CONN_MAX_AGE", 60))
+
 # Default local-development connection (can be overridden below)
 DATABASES = {
     "default": {
@@ -103,9 +106,6 @@ if DB_URL:
     DATABASES["default"] = dj_database_url.parse(DB_URL, conn_max_age=CONN_MAX_AGE)
     # Force correct backend; dj_database_url keeps ENGINE if scheme is mysql, but be explicit.
     DATABASES["default"]["ENGINE"] = "django.db.backends.mysql"
-
-# Connection pool settings (optional) — Django maintains persistent connections automatically
-CONN_MAX_AGE = int(os.getenv("DJANGO_CONN_MAX_AGE", 60))
 
 # -------------------------------------------------------------
 # Password validation
