@@ -24,7 +24,7 @@ class Base64ImageField(serializers.Field):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    profile_image = Base64ImageField(source='profile_image', allow_null=True, required=False)
+    profile_image = Base64ImageField(allow_null=True, required=False)
 
     class Meta:
         model = User
