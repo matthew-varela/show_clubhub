@@ -93,10 +93,15 @@ DATABASES = {
 }
 
 # If DATABASE_URL or CLEARDB_DATABASE_URL is provided (e.g. on Heroku)
-DB_URL = os.getenv("DATABASE_URL") or os.getenv("CLEARDB_DATABASE_URL")
+DB_URL = (
+    os.getenv("DATABASE_URL")
+    or os.getenv("CLEARDB_DATABASE_URL")
+    or os.getenv("JAWSDB_MARIA_URL")
+    or os.getenv("JAWSDB_URL")
+)
 if DB_URL:
     DATABASES["default"] = dj_database_url.parse(DB_URL, conn_max_age=CONN_MAX_AGE)
-    # Ensure Django uses MySQL backend even if scheme is mysql://
+    # Force correct backend; dj_database_url keeps ENGINE if scheme is mysql, but be explicit.
     DATABASES["default"]["ENGINE"] = "django.db.backends.mysql"
 
 # Connection pool settings (optional) — Django maintains persistent connections automatically
