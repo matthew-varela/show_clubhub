@@ -14,3 +14,5 @@ Jinja2>=3.1
 
 # Production WSGI server
 gunicorn
+
+whitenoise>=6.6
