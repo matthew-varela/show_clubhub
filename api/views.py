@@ -274,28 +274,4 @@ class EventViewSet(viewsets.ModelViewSet):
 class UserClubsSerializer(serializers.ModelSerializer):
     class Meta:
         model  = UserClubs
-        fields = ["user", "club", "role"]
-
-class EventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model  = Event
-        fields = "__all__"
-        read_only_fields = ["id", "created_by"]
-
-class Event(models.Model):
-    id          = models.AutoField(primary_key=True)
-    club        = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="events")
-    title       = models.CharField(max_length=120)
-    description = models.TextField(blank=True)
-    starts_at   = models.DateTimeField()
-    ends_at     = models.DateTimeField()
-    location    = models.CharField(max_length=255, blank=True)
-    created_by  = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_events")
-
-    class Meta:
-        ordering = ["starts_at"]
-
-class ClubRole(models.TextChoices):
-    MEMBER = "member", "Member"
-    ADMIN  = "admin",  "Admin"
-    OFFICER = "officer", "Officer" 
+        fields = ["user", "club", "role"] 
