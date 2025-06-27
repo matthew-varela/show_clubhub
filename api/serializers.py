@@ -1,6 +1,6 @@
 import base64
 from rest_framework import serializers
-from .models import User, Club
+from .models import User, Club, UserClubs, Event
 
 
 class Base64ImageField(serializers.Field):
@@ -34,4 +34,17 @@ class UserSerializer(serializers.ModelSerializer):
 class ClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
-        fields = ['id', 'name', 'affiliations', 'pres', 'vp'] 
+        fields = ['id', 'name', 'affiliations', 'pres', 'vp']
+
+
+class UserClubsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserClubs
+        fields = ["user", "club", "role"]
+
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = "__all__"
+        read_only_fields = ["id", "created_by"] 

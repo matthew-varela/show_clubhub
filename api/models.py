@@ -33,9 +33,17 @@ class Club(models.Model):
         return self.name
 
 
+# Add role choices for club membership
+class ClubRole(models.TextChoices):
+    MEMBER = "member", "Member"
+    OFFICER = "officer", "Officer"
+    ADMIN = "admin", "Admin"
+
+
 class UserClubs(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_clubs')
     club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='userclubs')
+    role = models.CharField(max_length=10, choices=ClubRole.choices, default=ClubRole.MEMBER)
 
     class Meta:
         db_table = 'user_clubs'
@@ -49,4 +57,24 @@ class CollegeClubs(models.Model):
 
     class Meta:
         db_table = 'college_clubs'
-        managed = False 
+        managed = False
+
+
+# New model to store club events
+class Event(models.Model):
+    id = models.AutoField(primary_key=True)
+    club = models.ForeignKey('Club', on_delete=models.CASCADE, related_name='events')
+    title = models.CharField(max_length=120)
+    description = models.TextField(blank=True)
+    starts_at = models.DateTimeField()
+    ends_at = models.DateTimeField()
+    location = models.CharField(max_length=255, blank=True)
+    created_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='created_events')
+
+    class Meta:
+        ordering = ["starts_at"]
+        db_table = 'events'
+        managed = True
+
+    def __str__(self):
+        return f"{self.title} ({self.club.name})" 
