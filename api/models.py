@@ -21,6 +21,9 @@ class User(models.Model):
 class Club(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
+    affiliations = models.CharField(max_length=255, null=True, blank=True)
+    pres = models.IntegerField(null=True, blank=True)
+    vp = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = 'clubs'

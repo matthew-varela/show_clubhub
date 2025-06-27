@@ -34,4 +34,4 @@ class UserSerializer(serializers.ModelSerializer):
 class ClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
-        fields = ['id', 'name'] 
+        fields = ['id', 'name', 'affiliations', 'pres', 'vp'] 
