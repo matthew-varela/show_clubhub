@@ -12,9 +12,12 @@ from rest_framework.views import APIView
 from werkzeug.security import generate_password_hash, check_password_hash
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.utils import timezone
+from rest_framework import serializers
 
-from .models import User, Club, UserClubs
-from .serializers import UserSerializer, ClubSerializer
+from .models import User, Club, UserClubs, Event
+from .serializers import UserSerializer, ClubSerializer, UserClubsSerializer, EventSerializer
+from .permissions import IsClubAdmin
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -131,10 +134,20 @@ class UserViewSet(viewsets.ViewSet):
 
         return Response({"message": "Phone number updated successfully", "phone": user.phone})
 
-class ClubViewSet(viewsets.ReadOnlyModelViewSet):
+class ClubViewSet(viewsets.ModelViewSet):
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
-    permission_classes = [permissions.AllowAny]
+
+    def get_permissions(self):
+        if self.action in ["update", "partial_update"]:
+            return [IsClubAdmin()]
+        return super().get_permissions()
+
+    def get_club(self):
+        # helper for permission class
+        if self.kwargs.get("pk"):
+            return self.get_object()
+        return None
 
     @action(detail=False, url_path="by_college/(?P<college_id>[^/.]+)")
     def by_college(self, request, college_id: int = None):
@@ -225,4 +238,64 @@ def test_db(request):
         User.objects.values_list("id", flat=True).first()
         return Response({"status": "success", "message": "Database connection successful"})
     except Exception as e:
-        return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+        return Response({"status": "error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DashboardView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        clubs        = Club.objects.filter(memberships__user=request.user)
+        clubs_data   = ClubSerializer(clubs, many=True).data
+
+        upcoming_qs  = Event.objects.filter(club__in=clubs, starts_at__gte=timezone.now())[:50]
+        events_data  = EventSerializer(upcoming_qs, many=True).data
+
+        return Response({"clubs": clubs_data, "upcoming_events": events_data})
+
+
+class EventViewSet(viewsets.ModelViewSet):
+    serializer_class = EventSerializer
+    permission_classes = [IsClubAdmin]         # write
+    queryset = Event.objects.select_related("club", "created_by")
+
+    def get_club(self):
+        return Club.objects.get(pk=self.kwargs["club_pk"])
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            return []      # open to any authenticated member
+        return [IsClubAdmin()]
+
+    # keep events nested under /api/clubs/<club_pk>/events/
+    def perform_create(self, serializer):
+        serializer.save(club=self.get_club(), created_by=self.request.user)
+
+class UserClubsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = UserClubs
+        fields = ["user", "club", "role"]
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = Event
+        fields = "__all__"
+        read_only_fields = ["id", "created_by"]
+
+class Event(models.Model):
+    id          = models.AutoField(primary_key=True)
+    club        = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="events")
+    title       = models.CharField(max_length=120)
+    description = models.TextField(blank=True)
+    starts_at   = models.DateTimeField()
+    ends_at     = models.DateTimeField()
+    location    = models.CharField(max_length=255, blank=True)
+    created_by  = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="created_events")
+
+    class Meta:
+        ordering = ["starts_at"]
+
+class ClubRole(models.TextChoices):
+    MEMBER = "member", "Member"
+    ADMIN  = "admin",  "Admin"
+    OFFICER = "officer", "Officer" 
