@@ -203,7 +203,36 @@
         }
       });
 
-      // 4) Logout Button
+      // 4) Add or change phone number
+      const phoneElement = document.getElementById('phone');
+      phoneElement.addEventListener('click', async () => {
+        const newPhone = prompt('Enter your new phone number:');
+        if (!newPhone) return;
+        try {
+          const response = await fetch('/api/users/update_phone', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ phone: newPhone })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            phoneElement.textContent = `Phone: ${data.phone}`;
+            alert('Phone number updated successfully!');
+          } else {
+            const errorData = await response.json();
+            alert(`Error updating phone number: ${errorData.error || 'Unknown error'}`);
+          }
+        } catch (error) {
+          console.error('Error updating phone number:', error);
+          alert('An error occurred while updating your phone number. Please try again.');
+        }
+      });
+
+      // 5) Logout Button
       logoutButton.addEventListener('click', async () => {
         try {
           const response = await fetch('/api/logout', {

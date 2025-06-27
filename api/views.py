@@ -114,7 +114,22 @@ class UserViewSet(viewsets.ViewSet):
         mime_type = "image/jpeg"  # naive
         data_uri = f"data:{mime_type};base64,{encoded}"
         return Response({"profile_image": data_uri})
+    
+    @action(detail=False, methods=["post"], url_path="upload_phone", permission_classes=[permissions.IsAuthenticated])
+    def upload_phone(self, request: HttpRequest):
+        user_id = request.user.id if request.user and not isinstance(request.user, AnonymousUser) else None
+        if not user_id:
+            return Response({"error": "Not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
 
+        phone = request.data.get("phone")
+        if not phone:
+            return Response({"error": "Phone number is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.get(pk=user_id)
+        user.phone = phone
+        user.save()
+
+        return Response({"message": "Phone number updated successfully", "phone": user.phone})
 
 class ClubViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Club.objects.all()
