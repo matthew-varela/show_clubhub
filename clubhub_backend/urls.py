@@ -17,4 +17,5 @@ urlpatterns = [
     path('account_page', TemplateView.as_view(template_name='account.html'), name='account_page'),
     path('create_account_page', TemplateView.as_view(template_name='create_account.html'), name='create_account_page'),
     path('clubpage_page', TemplateView.as_view(template_name='clubpage.html'), name='clubpage_page'),
+    path('myclubs_page', TemplateView.as_view(template_name='myclubs.html'), name='myclubs_page'),
 ] 
