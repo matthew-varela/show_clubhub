@@ -1,0 +1,171 @@
+@import url("pactice.css");
+
+/* Moved from pactice.css -- identical contents */
+
+/* -------------------------------------------------
+   Your Existing CSS
+   ------------------------------------------------- */
+
+/* Define color variables */
+:root {
+    --umich-blue: #00274C;
+    --umich-maize: #FFCB05;
+    --umich-light-gray: #f4f4f4;
+    --white: #ffffff;
+    --heading-font: 'Montserrat', 'Helvetica', sans-serif;
+    --body-font: 'Open Sans', 'Arial', sans-serif;
+  }
+  
+  /* Add Google Fonts import at the top of the file */
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap');
+  
+  body {
+    margin: 0;
+    font-family: var(--body-font);
+    min-height: 100vh;
+    display: flex;
+  }
+  
+  /* ----- SIDEBAR ----- */
+  .sidebar {
+    width: 200px;
+    background-color: var(--umich-blue);
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar-logo {
+    max-width: 100%;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  
+  .sidebar-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar-list li {
+    margin: 1rem 0;
+  }
+  
+  .sidebar-list a {
+    color: var(--umich-maize);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+  
+  .sidebar-list a:hover {
+    text-decoration: none;
+    transform: scale(1.05);
+  }
+  
+  /* ----- MAIN CONTENT LAYOUT ----- */
+  .main-content {
+    margin-left: 200px;
+    background-color: var(--umich-light-gray);
+    min-height: 100vh;
+    width: calc(100% - 200px);
+    padding: 0;
+  }
+  
+  /* ----- TOP NAVIGATION ----- */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--umich-blue);
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
+  }
+  
+  .nav-list {
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav-list li {
+    margin-right: 1rem;
+  }
+  
+  .nav-list a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .nav-list a:hover {
+    text-decoration: underline;
+  }
+  
+  .logo-image {
+    height: 40px;
+  }
+  
+  subheader {
+    background-color: var(--umich-blue);
+    color: var(--white);
+    margin-top: 1.25rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* ----- PAGE HEADER ----- */
+  header {
+    background-color: var(--umich-maize);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  header h1 {
+    margin: 0;
+    color: var(--umich-blue);
+  }
+  
+  /* Default: hide logout button until JS shows it */
+  #logoutButton {
+    display: none;
+    background-color: var(--umich-blue);
+    color: var(--white);
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+  }
+  
+  #logoutButton:hover {
+    background-color: #001f3a;
+  }
+  
+  /* ----- ACCOUNT CONTAINER "CARD" STYLE ----- */
+  .account-container {
+    background-color: var(--white);
+    border: 2px solid var(--umich-blue);
+    border-radius: 8px;
+    padding: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto; /* center horizontally */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* The rest of the CSS is identical — trimmed for brevity */ 

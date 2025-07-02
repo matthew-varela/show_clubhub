@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <!-- Updated stylesheet reference -->
+  <link rel="stylesheet" href="practice.css" />
+  <title>Explore Clubs</title>
+</head>
+<body>
+  <!-- Vertical Sidebar -->
+  <div class="sidebar">
+    <img src="{{ url_for('static', filename='images/clubhub.png') }}" alt="Clubhub Logo" class="sidebar-logo">
+    <ul class="sidebar-list">
+      <li><a href="practice2.html">My Clubs</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <nav class="navbar">
+      <!-- Left: UMich Logo -->
+      <div class="nav-left">
+        <img src="{{ url_for('static', filename='images/umich_logo.png') }}" alt="UMich Logo" class="logo-image" />
+      </div>
+
+      <!-- Center: Nav links -->
+      <ul class="nav-center nav-list">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about_page">About Us</a></li>
+        <li><a href="/contact_page">Contact</a></li>
+      </ul>
+
+      <!-- Right: Login / Account -->
+      <div class="nav-right">
+                      <!-- BEGIN ClubHub login/account block -->
+          <!-- Login link (shown when logged-out) -->
+          <a id="loginNavItem" href="/login_page">Login</a>
+
+          <!-- Account link + mini pic (shown when logged-in) -->
+          <a id="accountNavItem" href="/account_page" style="display:none;">Account</a>
+
+          <div id="profilePicNavItem" style="display:none;">
+            <img
+              id="miniProfilePic"
+              class="mini-profile-pic"
+              src="{{ url_for('static', filename='images/blank-prof-pic.png') }}"
+              alt="Profile"
+              style="display:none;"
+            />
+          </div>
+          <!-- END ClubHub login/account block -->
+      </div>
+    </nav>
+
+    <!-- Header Section with Maize Background -->
+    <header style="background-color: #FFCB05; padding: 20px; text-align: center;">
+      <h1>Explore Clubs</h1>
+    </header>
+
+    <!-- Combined Searches in Flex Container -->
+    <div class="search-container">
+      <!-- Left: Find Clubs By College -->
+      <div class="search-left">
+        <h2 class="search-section-header">Find Clubs By College</h2>
+        <div class="college-search">
+          <select id="collegeSelect">
+            <option value="" selected disabled>Select</option>
+            <option value="1">LSA</option>
+            <option value="2">Engineering</option>
+            <option value="3">Kinesiology</option>
+            <option value="4">Nursing</option>
+            <option value="5">Pharmacy</option>
+            <option value="6">Public Health</option>
+            <option value="7">Rackham</option>
+            <option value="8">Ross</option>
+            <option value="9">SMTD</option>
+            <option value="10">Taubman</option>
+            <option value="11">Other</option>
+          </select>
+          <button type="button" id="collegeSearchButton">Search</button>
+          <!-- Search Results Container (like a dropdown) -->
+          <div id="collegeSearchResults" class="search-results"></div>
+        </div>
+      </div>
+
+      <!-- Right: Direct Search -->
+      <div class="search-right">
+        <h2 class="search-section-header">Direct Search</h2>
+        <div class="search-bar">
+          <input
+            type="text"
+            id="clubSearch"
+            placeholder="Search clubs by name..."
+            aria-label="Search clubs by name"
+          />
+          <button type="button" id="searchButton">Search</button>
+          <!-- Search Results Container (like a dropdown) -->
+          <div id="searchResults" class="search-results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Updated JS reference -->
+  <script src="practice.js"></script>
+</body>
+</html>
